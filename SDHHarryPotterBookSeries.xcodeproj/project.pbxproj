@@ -6,7 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		5B9D00592D930CAD00DA108E /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 5B9D00582D930CAD00DA108E /* .gitignore */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		5B9D00582D930CAD00DA108E /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		5B9DFF862D90F57B00DA108E /* SDHHarryPotterBookSeries.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SDHHarryPotterBookSeries.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -45,6 +50,7 @@
 		5B9DFF7D2D90F57B00DA108E = {
 			isa = PBXGroup;
 			children = (
+				5B9D00582D930CAD00DA108E /* .gitignore */,
 				5B9DFF882D90F57B00DA108E /* SDHHarryPotterBookSeries */,
 				5B9DFF872D90F57B00DA108E /* Products */,
 			);
@@ -124,6 +130,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5B9D00592D930CAD00DA108E /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
