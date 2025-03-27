@@ -6,12 +6,18 @@
 //
 
 import UIKit
+import Combine
 import SnapKit
 
 class BookViewController: UIViewController {
     
-    private let dataService = DataService()
-    private var books: [Book]?
+    // MVC 코드
+//    private let dataService = DataService()
+//    private var books: [Book]?
+    
+    private var currBookIndex = 0
+    private var viewModel: BookViewModel!
+    private var subscriptions = Set<AnyCancellable>()
     
     // MARK: - UI Components
     
@@ -42,9 +48,13 @@ class BookViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         
+        viewModel = BookViewModel(selectedBookIndex: currBookIndex)
         setupUI()
-        fetchBooksData()
-        setupBookData(index: 0)
+        bind()
+        
+        // MVC 코드
+//        fetchBooksData()
+//        setupBookData(index: 0)
     }
     
     override func viewDidLayoutSubviews() {
@@ -81,25 +91,33 @@ private extension BookViewController {
         }
     }
     
-    func fetchBooksData() {
-        dataService.loadBooks { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let books):
-                self.books = books
-                
-            case .failure(let error):
-                // TODO: Alert로 에러 알리는 창 구현
-                self.books = nil
-            }
-        }
-    }
+//    func fetchBooksData() {
+//        dataService.loadBooks { [weak self] result in
+//            guard let self = self else { return }
+//            
+//            switch result {
+//            case .success(let books):
+//                self.books = books
+//                
+//            case .failure(let error):
+//                self.books = nil
+//            }
+//        }
+//    }
     
-    func setupBookData(index: Int) {
-        guard let books = books else { return }
-        let currBook = books[index]
-        bookTitlelabel.text = currBook.attributes.title
+//    func setupBookData(index: Int) {
+//        guard let books = books else { return }
+//        let currBook = books[index]
+//        bookTitlelabel.text = currBook.attributes.title
+//    }
+    
+    func bind() {
+        viewModel.selectedBookIndex
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.bookTitlelabel.text = self?.viewModel.title
+                self?.seriesButton.titleLabel?.text = String(((self?.currBookIndex ?? 0) + 1))
+            }.store(in: &subscriptions)
     }
 }
 
