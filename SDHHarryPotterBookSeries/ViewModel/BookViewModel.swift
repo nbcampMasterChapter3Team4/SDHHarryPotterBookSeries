@@ -5,7 +5,7 @@
 //  Created by 서동환 on 3/27/25.
 //
 
-import Foundation
+import UIKit
 import Combine
 
 final class BookViewModel {
@@ -22,6 +22,10 @@ final class BookViewModel {
     }
     
     // MARK: - Data ➡️ Output
+    
+    var image: UIImage? {
+        return BookImage[selectedBookIndex.value]?.image ?? nil
+    }
     
     var title: String {
         return books?[selectedBookIndex.value].attributes.title ?? "n/a"

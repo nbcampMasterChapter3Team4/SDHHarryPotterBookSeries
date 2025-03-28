@@ -11,6 +11,8 @@ import SnapKit
 
 class BookViewController: UIViewController {
     
+    // MARK: - Properties
+    
     private var currBookIndex = 0
     private var viewModel: BookViewModel!
     private var subscriptions = Set<AnyCancellable>()
@@ -38,7 +40,11 @@ class BookViewController: UIViewController {
         return button
     }()
     
+    // 책 정보 영역
     private let bookInfoView = BookInfoView()
+    
+    // Dedication & Summary 영역
+    private let bookDedAndSumView = BookDedAndSumView()
     
     // MARK: - UIViewController
     
@@ -67,7 +73,7 @@ private extension BookViewController {
     }
     
     func setViewHierarchy() {
-        view.addSubviews(bookTitlelabel, seriesButton, bookInfoView)
+        self.view.addSubviews(bookTitlelabel, seriesButton, bookInfoView)
     }
     
     func setConstraints() {
@@ -77,8 +83,8 @@ private extension BookViewController {
         }
         
         seriesButton.snp.makeConstraints { make in
-            make.leading.greaterThanOrEqualToSuperview().offset(20)
-            make.trailing.lessThanOrEqualToSuperview().offset(-20)
+            make.leading.greaterThanOrEqualToSuperview().inset(20)
+            make.trailing.lessThanOrEqualToSuperview().inset(20)
             make.top.equalTo(bookTitlelabel.snp.bottom).offset(16)
             make.centerX.equalToSuperview()
             make.width.height.equalTo(40)
@@ -97,16 +103,20 @@ private extension BookViewController {
         viewModel.selectedBookIndex
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in
+                // Level 1
                 self?.bookTitlelabel.text = self?.viewModel.title
                 self?.seriesButton.titleLabel?.text = String(bookIndex)
                 
-                let bookImageName = "harrypotter" + String(bookIndex)
-                self?.bookInfoView.bookImageView.image = UIImage(named: bookImageName)
+                // Level 2
+                self?.bookInfoView.bookImageView.image = self?.viewModel.image
                 self?.bookInfoView.infoTitleLabel.text = self?.viewModel.title
                 self?.bookInfoView.authorLabel.text = self?.viewModel.author
                 let releaseDate = self?.viewModel.releaseDate.toDate()?.toString()
                 self?.bookInfoView.releasedLabel.text = releaseDate
                 self?.bookInfoView.pagesLabel.text = String(self?.viewModel.pages ?? 0)
+                
+                // Level 3
+                
             }.store(in: &subscriptions)
     }
 }
