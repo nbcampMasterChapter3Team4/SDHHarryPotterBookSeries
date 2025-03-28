@@ -93,6 +93,7 @@ private extension BookViewController {
     
     func bind() {
         let bookIndex = currBookIndex + 1
+        
         viewModel.selectedBookIndex
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in
@@ -103,7 +104,8 @@ private extension BookViewController {
                 self?.bookInfoView.bookImageView.image = UIImage(named: bookImageName)
                 self?.bookInfoView.infoTitleLabel.text = self?.viewModel.title
                 self?.bookInfoView.authorLabel.text = self?.viewModel.author
-                self?.bookInfoView.releasedLabel.text = self?.viewModel.releaseDate
+                let releaseDate = self?.viewModel.releaseDate.toDate()?.toString()
+                self?.bookInfoView.releasedLabel.text = releaseDate
                 self?.bookInfoView.pagesLabel.text = String(self?.viewModel.pages ?? 0)
             }.store(in: &subscriptions)
     }
