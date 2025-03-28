@@ -1,5 +1,5 @@
 //
-//  UIKit+Extension.swift
+//  UIView+Extension.swift
 //  SDHHarryPotterBookSeries
 //
 //  Created by 서동환 on 3/28/25.
