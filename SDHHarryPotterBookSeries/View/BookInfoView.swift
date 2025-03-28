@@ -34,7 +34,7 @@ final class BookInfoView: UIView {
         stackView.alignment = .leading
         stackView.spacing = 8
         stackView.isLayoutMarginsRelativeArrangement = true
-        stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 16, trailing: 0)
+        stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 24, trailing: 0)
         
         return stackView
     }()
