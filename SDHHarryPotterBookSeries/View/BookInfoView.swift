@@ -125,17 +125,28 @@ final class BookInfoView: UIView {
         
         return label
     }()
+    
+    // MARK: - Initializer
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupUI()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }
 
 // MARK: - UI Methods
 
-extension BookInfoView {
+private extension BookInfoView {
     func setupUI() {
         setViewHierarchy()
         setConstraints()
     }
     
-    private func setViewHierarchy() {
+    func setViewHierarchy() {
         self.addSubview(bookInfoHrizStackView)
         bookInfoHrizStackView.addArrangedSubviews(bookImageView, textInfoVrtcStackView)
         textInfoVrtcStackView.addArrangedSubviews(
@@ -150,13 +161,13 @@ extension BookInfoView {
     }
     
     private func setConstraints() {
-        bookInfoHrizStackView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+        bookInfoHrizStackView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
         }
         
-        bookImageView.snp.makeConstraints { make in
-            make.width.equalTo(100)
-            make.height.equalTo(bookImageView.snp.width).multipliedBy(3 / 2)
+        bookImageView.snp.makeConstraints {
+            $0.width.equalTo(100)
+            $0.height.equalTo(bookImageView.snp.width).multipliedBy(3 / 2)
         }
     }
 }

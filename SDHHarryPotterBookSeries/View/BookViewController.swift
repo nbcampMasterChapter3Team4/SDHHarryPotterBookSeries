@@ -69,7 +69,6 @@ private extension BookViewController {
     func setupUI() {
         setViewHierarchy()
         setConstraints()
-        bookInfoView.setupUI()
     }
     
     func setViewHierarchy() {
@@ -77,23 +76,23 @@ private extension BookViewController {
     }
     
     func setConstraints() {
-        bookTitlelabel.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(20)
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).inset(10)
+        bookTitlelabel.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.top.equalTo(view.safeAreaLayoutGuide.snp.top).inset(10)
         }
         
-        seriesButton.snp.makeConstraints { make in
-            make.leading.greaterThanOrEqualToSuperview().inset(20)
-            make.trailing.lessThanOrEqualToSuperview().inset(20)
-            make.top.equalTo(bookTitlelabel.snp.bottom).offset(16)
-            make.centerX.equalToSuperview()
-            make.width.height.equalTo(40)
+        seriesButton.snp.makeConstraints {
+            $0.leading.greaterThanOrEqualToSuperview().inset(20)
+            $0.trailing.lessThanOrEqualToSuperview().inset(20)
+            $0.top.equalTo(bookTitlelabel.snp.bottom).offset(16)
+            $0.centerX.equalToSuperview()
+            $0.width.height.equalTo(44)
         }
         
-        bookInfoView.snp.makeConstraints { make in
-            make.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(5)
-            make.top.equalTo(seriesButton.snp.bottom).offset(32)
-            make.height.equalTo(150)
+        bookInfoView.snp.makeConstraints {
+            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(5)
+            $0.top.equalTo(seriesButton.snp.bottom).offset(32)
+            $0.height.equalTo(150)
         }
     }
     

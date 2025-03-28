@@ -10,11 +10,15 @@ import Combine
 
 final class BookViewModel {
     
+    // MARK: - Properties
+    
     private let dataService = DataService()
     private var books: [Book]?
     private var subscriptions = Set<AnyCancellable>()
     
     var selectedBookIndex: CurrentValueSubject<Int, Never>
+    
+    // MARK: - Initializer
     
     init(selectedBookIndex: Int) {
         self.selectedBookIndex = CurrentValueSubject(selectedBookIndex)
