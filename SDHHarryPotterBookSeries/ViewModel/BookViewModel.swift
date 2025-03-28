@@ -24,7 +24,7 @@ final class BookViewModel {
     // MARK: - Data ➡️ Output
     
     var image: UIImage? {
-        return BookImage[selectedBookIndex.value]?.image ?? nil
+        return BookImage.allCases[selectedBookIndex.value].image
     }
     
     var title: String {
@@ -54,9 +54,13 @@ final class BookViewModel {
     var wiki: String {
         return books?[selectedBookIndex.value].attributes.wiki ?? "n/a"
     }
+    
+    // MARK: - User Action ➡️ Input
+    
+    
 }
 
-extension BookViewModel {
+private extension BookViewModel {
     func loadBooks() {
         dataService.loadBooks { [weak self] result in
             guard let self = self else { return }

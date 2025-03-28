@@ -1,6 +1,8 @@
 import Foundation
+import OSLog
 
 class DataService {
+    private let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "DataService")
     
     enum DataError: Error {
         case fileNotFound
@@ -19,7 +21,8 @@ class DataService {
             let books = bookResponse.data
             completion(.success(books))
         } catch {
-            print("🚨 JSON 파싱 에러 : \(error)")
+            let errorString = "\(error)"
+            os_log("🚨 JSON 파싱 에러 : %@", log: self.log, type: .error, errorString)
             completion(.failure(DataError.parsingFailed))
         }
     }

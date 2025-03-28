@@ -98,14 +98,13 @@ private extension BookViewController {
     }
     
     func bind() {
-        let bookIndex = currBookIndex + 1
-        
         viewModel.selectedBookIndex
             .receive(on: RunLoop.main)
-            .sink { [weak self] _ in
+            .sink { [weak self] newIndex in
+                let bookSeries = newIndex + 1
                 // Level 1
                 self?.bookTitlelabel.text = self?.viewModel.title
-                self?.seriesButton.titleLabel?.text = String(bookIndex)
+                self?.seriesButton.titleLabel?.text = String(bookSeries)
                 
                 // Level 2
                 self?.bookInfoView.bookImageView.image = self?.viewModel.image

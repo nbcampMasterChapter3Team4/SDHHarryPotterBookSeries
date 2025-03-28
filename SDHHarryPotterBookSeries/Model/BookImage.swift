@@ -19,8 +19,4 @@ enum BookImage: String, CaseIterable {
     var image: UIImage? {
         return UIImage(named: rawValue)
     }
-    
-    static subscript(index: Int) -> BookImage? {
-        return allCases.indices.contains(index) ? allCases[index] : nil
-    }
 }
