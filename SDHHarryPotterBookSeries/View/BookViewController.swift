@@ -72,8 +72,7 @@ private extension BookViewController {
     }
     
     func setViewHierarchy() {
-        view.addSubview(bookTitlelabel)
-        view.addSubview(seriesButton)
+        view.addSubviews(bookTitlelabel, seriesButton)
     }
     
     func setConstraints() {
@@ -91,6 +90,7 @@ private extension BookViewController {
         }
     }
     
+    // MVC 코드
 //    func fetchBooksData() {
 //        dataService.loadBooks { [weak self] result in
 //            guard let self = self else { return }
