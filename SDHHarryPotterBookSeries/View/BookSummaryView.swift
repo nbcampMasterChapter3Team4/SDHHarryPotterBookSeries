@@ -51,21 +51,27 @@ final class BookSummaryView: UIView {
     }
 }
 
-private extension BookSummaryView {
-    func setupUI() {
+// MARK: - UI Methods
+
+extension BookSummaryView {
+    private func setupUI() {
         setViewHierarchy()
         setConstraints()
     }
     
-    func setViewHierarchy() {
+    private func setViewHierarchy() {
         self.addSubview(sumVrtcStackView)
         sumVrtcStackView.addArrangedSubviews(infoSumLabel, sumLabel)
     }
     
-    func setConstraints() {
+    private func setConstraints() {
         sumVrtcStackView.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
+    }
+    
+    func configure(summary: String) {
+        sumLabel.text = summary
     }
 }
 

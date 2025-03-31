@@ -141,13 +141,13 @@ final class BookInfoView: UIView {
 
 // MARK: - UI Methods
 
-private extension BookInfoView {
-    func setupUI() {
+extension BookInfoView {
+    private func setupUI() {
         setViewHierarchy()
         setConstraints()
     }
     
-    func setViewHierarchy() {
+    private func setViewHierarchy() {
         self.addSubview(bookInfoHrizStackView)
         bookInfoHrizStackView.addArrangedSubviews(bookImageView, textInfoVrtcStackView)
         textInfoVrtcStackView.addArrangedSubviews(
@@ -161,7 +161,7 @@ private extension BookInfoView {
         infoPagesHrizStackView.addArrangedSubviews(infoPagesLabel, pagesLabel)
     }
     
-    func setConstraints() {
+    private func setConstraints() {
         bookInfoHrizStackView.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
@@ -170,5 +170,20 @@ private extension BookInfoView {
             $0.width.equalTo(100)
             $0.height.equalTo(bookImageView.snp.width).multipliedBy(1.5)
         }
+    }
+    
+    func configure(
+        image: UIImage?,
+        title: String,
+        author: String,
+        releaseDate: String,
+        pages: String
+    ) {
+        bookImageView.image = image
+        infoTitleLabel.text = title
+        authorLabel.text = author
+        let releaseDate = releaseDate.toDate()?.toString()
+        releasedLabel.text = releaseDate
+        pagesLabel.text = pages
     }
 }

@@ -128,16 +128,17 @@ private extension BookViewController {
                     seriesButton.titleLabel?.text = String(1)
                     
                     // Level 2
-                    bookInfoView.bookImageView.image = viewModel.image
-                    bookInfoView.infoTitleLabel.text = book.attributes.title
-                    bookInfoView.authorLabel.text = book.attributes.author
-                    let releaseDate = book.attributes.releaseDate.toDate()?.toString()
-                    bookInfoView.releasedLabel.text = releaseDate
-                    bookInfoView.pagesLabel.text = String(viewModel.pages)
+                    bookInfoView.configure(
+                        image: viewModel.image,
+                        title: book.attributes.title,
+                        author: book.attributes.author,
+                        releaseDate: book.attributes.releaseDate,
+                        pages: String(viewModel.pages)
+                    )
                     
                     // Level 3
-                    bookDedicationView.dedLabel.text = book.attributes.dedication
-                    bookSummaryView.sumLabel.text = book.attributes.summary
+                    bookDedicationView.configure(dedication: book.attributes.dedication)
+                    bookSummaryView.configure(summary: book.attributes.summary)
                 }
             }.store(in: &subscriptions)
         

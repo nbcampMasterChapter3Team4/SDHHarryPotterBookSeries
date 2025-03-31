@@ -51,20 +51,26 @@ final class BookDedicationView: UIView {
     }
 }
 
-private extension BookDedicationView {
-    func setupUI() {
+// MARK: - UI Methods
+
+extension BookDedicationView {
+    private func setupUI() {
         setViewHierarchy()
         setConstraints()
     }
     
-    func setViewHierarchy() {
+    private func setViewHierarchy() {
         self.addSubview(dedVrtcStackView)
         dedVrtcStackView.addArrangedSubviews(infoDedLabel, dedLabel)
     }
     
-    func setConstraints() {
+    private func setConstraints() {
         dedVrtcStackView.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
+    }
+    
+    func configure(dedication: String) {
+        dedLabel.text = dedication
     }
 }
