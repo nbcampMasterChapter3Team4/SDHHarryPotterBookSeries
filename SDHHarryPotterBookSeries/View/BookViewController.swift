@@ -19,6 +19,7 @@ class BookViewController: UIViewController {
     
     // MARK: - UI Components
     
+    // 책 제목 라벨
     private let bookTitlelabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 24, weight: .bold)
@@ -28,6 +29,7 @@ class BookViewController: UIViewController {
         return label
     }()
     
+    // 책 시리즈 버튼
     private let seriesButton: UIButton = {
         var config = UIButton.Configuration.filled()
         var titleAttr = AttributedString.init("1")
@@ -54,7 +56,6 @@ class BookViewController: UIViewController {
         
         setupUI()
         bind()
-        viewModel.loadBooks()
     }
     
     override func viewDidLayoutSubviews() {
@@ -78,7 +79,7 @@ private extension BookViewController {
     func setConstraints() {
         bookTitlelabel.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(20)
-            $0.top.equalTo(view.safeAreaLayoutGuide.snp.top).inset(10)
+            $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).inset(10)
         }
         
         seriesButton.snp.makeConstraints {
@@ -90,7 +91,7 @@ private extension BookViewController {
         }
         
         bookInfoView.snp.makeConstraints {
-            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(5)
+            $0.leading.trailing.equalTo(self.view.safeAreaLayoutGuide).inset(5)
             $0.top.equalTo(seriesButton.snp.bottom).offset(32)
             $0.height.equalTo(150)
         }

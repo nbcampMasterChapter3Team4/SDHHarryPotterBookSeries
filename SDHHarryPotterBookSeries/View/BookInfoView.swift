@@ -167,7 +167,9 @@ private extension BookInfoView {
         
         bookImageView.snp.makeConstraints {
             $0.width.equalTo(100)
-            $0.height.equalTo(bookImageView.snp.width).multipliedBy(3 / 2)
+            $0.height.equalTo(bookImageView.snp.width).multipliedBy(1.5)
+            // (Int / Int) 식으로 작성시 Auto Layout 경고 발생
+            // (Float / Float) 혹은 Float로 작성해야 함
         }
     }
 }

@@ -15,22 +15,22 @@ final class BookViewModel {
     private let dataService = DataService()
     
     private var books: [Book]?
-    var selectedBook: CurrentValueSubject<Book?, Never>
     var selectedBookIndex: Int
+    var selectedBook = CurrentValueSubject<Book?, Never>(nil)
     var loadBookError = PassthroughSubject<String, Never>()
     private var subscriptions = Set<AnyCancellable>()
     
     // MARK: - Initializer
     
     init(selectedBookIndex: Int) {
-        self.selectedBook = CurrentValueSubject(nil)
         self.selectedBookIndex = selectedBookIndex
-        self.loadBooks()
+        loadBooks()
     }
     
     // MARK: - Data ➡️ Output
     
     var image: UIImage? {
+        // 책 데이터가 로드 됐을때만 이미지 로드
         if selectedBook.value != nil {
             return BookImage.allCases[selectedBookIndex].image
         }
@@ -102,7 +102,7 @@ extension BookViewModel {
     }
     
     /// 시리즈 버튼 눌렀을 때 selectedBook 변경
-    func loadSelectedBook(selectedBookIndex: Int) {
+    func changeSelectedBook(to selectedBookIndex: Int) {
         self.selectedBookIndex = selectedBookIndex
         selectedBook = CurrentValueSubject(books?[selectedBookIndex])
     }
