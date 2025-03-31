@@ -13,50 +13,57 @@ final class BookViewModel {
     // MARK: - Properties
     
     private let dataService = DataService()
-    private var books: [Book]?
-    private var subscriptions = Set<AnyCancellable>()
     
-    var selectedBookIndex: CurrentValueSubject<Int, Never>
+    private var books: [Book]?
+    var selectedBook: CurrentValueSubject<Book?, Never>
+    var selectedBookIndex: Int
+    var loadBookError = PassthroughSubject<String, Never>()
+    private var subscriptions = Set<AnyCancellable>()
     
     // MARK: - Initializer
     
     init(selectedBookIndex: Int) {
-        self.selectedBookIndex = CurrentValueSubject(selectedBookIndex)
-        loadBooks()
+        self.selectedBook = CurrentValueSubject(nil)
+        self.selectedBookIndex = selectedBookIndex
+        self.loadBooks()
     }
     
     // MARK: - Data ➡️ Output
     
     var image: UIImage? {
-        return BookImage.allCases[selectedBookIndex.value].image
+        if selectedBook.value != nil {
+            return BookImage.allCases[selectedBookIndex].image
+        }
+        
+        return nil
     }
     
     var title: String {
-        return books?[selectedBookIndex.value].attributes.title ?? "n/a"
+        return selectedBook.value?.attributes.title ?? "n/a"
     }
     
     var author: String {
-        return books?[selectedBookIndex.value].attributes.author ?? "n/a"
+        return selectedBook.value?.attributes.author ?? "n/a"
     }
     
     var pages: Int {
-        return books?[selectedBookIndex.value].attributes.pages ?? 0
+        return selectedBook.value?.attributes.pages ?? 0
     }
     
     var releaseDate: String {
-        return books?[selectedBookIndex.value].attributes.releaseDate ?? "n/a"
+        return selectedBook.value?.attributes.releaseDate ?? "n/a"
     }
     
     var dedication: String {
-        return books?[selectedBookIndex.value].attributes.dedication ?? "n/a"
+        return selectedBook.value?.attributes.dedication ?? "n/a"
     }
     
     var summary: String {
-        return books?[selectedBookIndex.value].attributes.summary ?? "n/a"
+        return selectedBook.value?.attributes.summary ?? "n/a"
     }
     
     var wiki: String {
-        return books?[selectedBookIndex.value].attributes.wiki ?? "n/a"
+        return selectedBook.value?.attributes.wiki ?? "n/a"
     }
     
     // MARK: - User Action ➡️ Input
@@ -64,7 +71,7 @@ final class BookViewModel {
     
 }
 
-private extension BookViewModel {
+extension BookViewModel {
     func loadBooks() {
         dataService.loadBooks { [weak self] result in
             guard let self = self else { return }
@@ -72,11 +79,31 @@ private extension BookViewModel {
             switch result {
             case .success(let books):
                 self.books = books
+                selectedBook = CurrentValueSubject(books[selectedBookIndex])
                 
             case .failure(let error):
-                // TODO: Alert로 에러 알리는 창 구현
-                self.books = nil
+                books = nil
+                selectedBook = CurrentValueSubject(nil)
+                
+                let message: String
+                if let dataError = error as? DataService.DataError {
+                    switch dataError {
+                    case .fileNotFound:
+                        message = "데이터 파일을 찾을 수 없습니다."
+                    case .parsingFailed:
+                        message = "데이터를 불러오는 중 오류가 발생했습니다."
+                    }
+                } else {
+                    message = error.localizedDescription
+                }
+                loadBookError.send(message)
             }
         }
+    }
+    
+    /// 시리즈 버튼 눌렀을 때 selectedBook 변경
+    func loadSelectedBook(selectedBookIndex: Int) {
+        self.selectedBookIndex = selectedBookIndex
+        selectedBook = CurrentValueSubject(books?[selectedBookIndex])
     }
 }

@@ -14,7 +14,7 @@ class BookViewController: UIViewController {
     // MARK: - Properties
     
     private var currBookIndex = 0
-    private var viewModel: BookViewModel!
+    private var viewModel = BookViewModel(selectedBookIndex: 0)
     private var subscriptions = Set<AnyCancellable>()
     
     // MARK: - UI Components
@@ -52,9 +52,9 @@ class BookViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         
-        viewModel = BookViewModel(selectedBookIndex: currBookIndex)
         setupUI()
         bind()
+        viewModel.loadBooks()
     }
     
     override func viewDidLayoutSubviews() {
@@ -97,24 +97,45 @@ private extension BookViewController {
     }
     
     func bind() {
-        viewModel.selectedBookIndex
+        viewModel.selectedBook
             .receive(on: RunLoop.main)
-            .sink { [weak self] newIndex in
-                let bookSeries = newIndex + 1
-                // Level 1
-                self?.bookTitlelabel.text = self?.viewModel.title
-                self?.seriesButton.titleLabel?.text = String(bookSeries)
-                
-                // Level 2
-                self?.bookInfoView.bookImageView.image = self?.viewModel.image
-                self?.bookInfoView.infoTitleLabel.text = self?.viewModel.title
-                self?.bookInfoView.authorLabel.text = self?.viewModel.author
-                let releaseDate = self?.viewModel.releaseDate.toDate()?.toString()
-                self?.bookInfoView.releasedLabel.text = releaseDate
-                self?.bookInfoView.pagesLabel.text = String(self?.viewModel.pages ?? 0)
-                
-                // Level 3
-                
+            .sink { [weak self] book in
+                self?.updateUI(with: book)
             }.store(in: &subscriptions)
+        
+        viewModel.loadBookError
+            .receive(on: RunLoop.main)
+            .sink { [weak self] errorMsg in
+                self?.showErrorAlert(message: errorMsg)
+            }.store(in: &subscriptions)
+    }
+    
+    func updateUI(with book: Book?) {
+//        let bookSeries = index + 1
+        
+        // Level 1
+        bookTitlelabel.text = viewModel.title
+        seriesButton.titleLabel?.text = String(1)
+        
+        // Level 2
+        bookInfoView.bookImageView.image = viewModel.image
+        bookInfoView.infoTitleLabel.text = viewModel.title
+        bookInfoView.authorLabel.text = viewModel.author
+        let releaseDate = viewModel.releaseDate.toDate()?.toString()
+        bookInfoView.releasedLabel.text = releaseDate
+        bookInfoView.pagesLabel.text = String(viewModel.pages)
+        
+        // Level 3
+        
+    }
+}
+
+// MARK: - Private Methods
+
+private extension BookViewController {
+    func showErrorAlert(message: String) {
+        let sheet = UIAlertController(title: "오류", message: message, preferredStyle: .alert)
+        sheet.addAction(UIAlertAction(title: "확인", style: .default))
+        present(sheet, animated: true)
     }
 }
