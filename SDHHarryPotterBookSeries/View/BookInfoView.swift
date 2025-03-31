@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 final class BookInfoView: UIView {
     
@@ -160,7 +161,7 @@ private extension BookInfoView {
         infoPagesHrizStackView.addArrangedSubviews(infoPagesLabel, pagesLabel)
     }
     
-    private func setConstraints() {
+    func setConstraints() {
         bookInfoHrizStackView.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
@@ -168,8 +169,6 @@ private extension BookInfoView {
         bookImageView.snp.makeConstraints {
             $0.width.equalTo(100)
             $0.height.equalTo(bookImageView.snp.width).multipliedBy(1.5)
-            // (Int / Int) 식으로 작성시 Auto Layout 경고 발생
-            // (Float / Float) 혹은 Float로 작성해야 함
         }
     }
 }

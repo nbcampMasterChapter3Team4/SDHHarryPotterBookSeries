@@ -45,10 +45,13 @@ class BookViewController: UIViewController {
     // 책 정보 영역
     private let bookInfoView = BookInfoView()
     
-    // Dedication & Summary 영역
-    private let bookDedAndSumView = BookDedAndSumView()
+    // Dedication 영역
+    private let bookDedicationView = BookDedicationView()
     
-    // MARK: - UIViewController
+    // Summary 영역
+    private let bookSummaryView = BookSummaryView()
+    
+    // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -73,7 +76,13 @@ private extension BookViewController {
     }
     
     func setViewHierarchy() {
-        self.view.addSubviews(bookTitlelabel, seriesButton, bookInfoView)
+        self.view.addSubviews(
+            bookTitlelabel,
+            seriesButton,
+            bookInfoView,
+            bookDedicationView,
+            bookSummaryView
+        )
     }
     
     func setConstraints() {
@@ -95,39 +104,49 @@ private extension BookViewController {
             $0.top.equalTo(seriesButton.snp.bottom).offset(32)
             $0.height.equalTo(150)
         }
+        
+        bookDedicationView.snp.makeConstraints {
+            $0.top.equalTo(bookInfoView.snp.bottom).offset(24)
+            $0.leading.trailing.equalToSuperview().inset(20)
+        }
+        
+        bookSummaryView.snp.makeConstraints {
+            $0.top.equalTo(bookDedicationView.snp.bottom).offset(24)
+            $0.leading.trailing.equalToSuperview().inset(20)
+        }
     }
     
     func bind() {
         viewModel.selectedBook
             .receive(on: RunLoop.main)
             .sink { [weak self] book in
-                self?.updateUI(with: book)
+                guard let self = self else { return }
+                
+                if let book = book {
+                    // Level 1
+                    bookTitlelabel.text = book.attributes.title
+                    seriesButton.titleLabel?.text = String(1)
+                    
+                    // Level 2
+                    bookInfoView.bookImageView.image = viewModel.image
+                    bookInfoView.infoTitleLabel.text = book.attributes.title
+                    bookInfoView.authorLabel.text = book.attributes.author
+                    let releaseDate = book.attributes.releaseDate.toDate()?.toString()
+                    bookInfoView.releasedLabel.text = releaseDate
+                    bookInfoView.pagesLabel.text = String(viewModel.pages)
+                    
+                    // Level 3
+                    bookDedicationView.dedLabel.text = book.attributes.dedication
+                    bookSummaryView.sumLabel.text = book.attributes.summary
+                }
             }.store(in: &subscriptions)
         
         viewModel.loadBookError
             .receive(on: RunLoop.main)
             .sink { [weak self] errorMsg in
-                self?.showErrorAlert(message: errorMsg)
+                guard let self = self else { return }
+                self.showErrorAlert(message: errorMsg)
             }.store(in: &subscriptions)
-    }
-    
-    func updateUI(with book: Book?) {
-//        let bookSeries = index + 1
-        
-        // Level 1
-        bookTitlelabel.text = viewModel.title
-        seriesButton.titleLabel?.text = String(1)
-        
-        // Level 2
-        bookInfoView.bookImageView.image = viewModel.image
-        bookInfoView.infoTitleLabel.text = viewModel.title
-        bookInfoView.authorLabel.text = viewModel.author
-        let releaseDate = viewModel.releaseDate.toDate()?.toString()
-        bookInfoView.releasedLabel.text = releaseDate
-        bookInfoView.pagesLabel.text = String(viewModel.pages)
-        
-        // Level 3
-        
     }
 }
 
