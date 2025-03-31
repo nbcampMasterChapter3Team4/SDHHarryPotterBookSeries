@@ -14,12 +14,12 @@ class BookViewController: UIViewController {
     // MARK: - Properties
     
     private var currBookIndex = 0
-    private var viewModel = BookViewModel(selectedBookIndex: 0)
+    private let viewModel = BookViewModel(selectedBookIndex: 0)
     private var subscriptions = Set<AnyCancellable>()
     
     // MARK: - UI Components
     
-    // 책 제목 라벨
+    /// 책 제목 라벨
     private let bookTitlelabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 24, weight: .bold)
@@ -29,7 +29,7 @@ class BookViewController: UIViewController {
         return label
     }()
     
-    // 책 시리즈 버튼
+    /// 책 시리즈 버튼
     private let seriesButton: UIButton = {
         var config = UIButton.Configuration.filled()
         var titleAttr = AttributedString.init("1")
@@ -42,13 +42,13 @@ class BookViewController: UIViewController {
         return button
     }()
     
-    // 책 정보 영역
+    /// 책 정보 영역
     private let bookInfoView = BookInfoView()
     
-    // Dedication 영역
+    /// Dedication 영역
     private let bookDedicationView = BookDedicationView()
     
-    // Summary 영역
+    /// Summary 영역
     private let bookSummaryView = BookSummaryView()
     
     // MARK: - Lifecycle
@@ -59,6 +59,7 @@ class BookViewController: UIViewController {
         
         setupUI()
         bind()
+        viewModel.loadBooks()
     }
     
     override func viewDidLayoutSubviews() {
@@ -121,33 +122,58 @@ private extension BookViewController {
             .receive(on: RunLoop.main)
             .sink { [weak self] book in
                 guard let self = self else { return }
-                
-                if let book = book {
-                    // Level 1
-                    bookTitlelabel.text = book.attributes.title
-                    seriesButton.titleLabel?.text = String(1)
-                    
-                    // Level 2
-                    bookInfoView.configure(
-                        image: viewModel.image,
-                        title: book.attributes.title,
-                        author: book.attributes.author,
-                        releaseDate: book.attributes.releaseDate,
-                        pages: String(viewModel.pages)
-                    )
-                    
-                    // Level 3
-                    bookDedicationView.configure(dedication: book.attributes.dedication)
-                    bookSummaryView.configure(summary: book.attributes.summary)
-                }
+                updateUI(with: book)
             }.store(in: &subscriptions)
         
         viewModel.loadBookError
             .receive(on: RunLoop.main)
             .sink { [weak self] errorMsg in
                 guard let self = self else { return }
-                self.showErrorAlert(message: errorMsg)
+                showErrorAlert(message: errorMsg)
             }.store(in: &subscriptions)
+    }
+    
+    func updateUI(with book: Book?) {
+        if let book = book {
+            // Level 1
+            bookTitlelabel.text = book.attributes.title
+            seriesButton.titleLabel?.text = String(1)
+            
+            // Level 2
+            let convertedDate = book.attributes.releaseDate.toDate()?.toString()
+            bookInfoView.configure(
+                image: viewModel.image,
+                title: book.attributes.title,
+                author: book.attributes.author,
+                releaseDate: convertedDate ?? book.attributes.releaseDate,
+                pages: String(book.attributes.pages)
+            )
+            
+            // Level 3
+            bookDedicationView.configure(dedication: book.attributes.dedication)
+            bookSummaryView.configure(summary: book.attributes.summary)
+        } else {
+            // 예외 처리 1
+            // - 데이터 없을 때 기본값 표시
+            let defaultValue = "N/A"
+            
+            // Level 1
+            bookTitlelabel.text = defaultValue
+            seriesButton.titleLabel?.text = String(1)
+            
+            // Level 2
+            bookInfoView.configure(
+                image: nil,
+                title: defaultValue,
+                author: defaultValue,
+                releaseDate: defaultValue,
+                pages: defaultValue
+            )
+            
+            // Level 3
+            bookDedicationView.configure(dedication: defaultValue)
+            bookSummaryView.configure(summary: defaultValue)
+        }
     }
 }
 

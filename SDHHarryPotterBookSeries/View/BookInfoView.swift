@@ -182,7 +182,6 @@ extension BookInfoView {
         bookImageView.image = image
         infoTitleLabel.text = title
         authorLabel.text = author
-        let releaseDate = releaseDate.toDate()?.toString()
         releasedLabel.text = releaseDate
         pagesLabel.text = pages
     }

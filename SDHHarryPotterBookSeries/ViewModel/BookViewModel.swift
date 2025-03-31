@@ -13,21 +13,20 @@ final class BookViewModel {
     // MARK: - Properties
     
     private let dataService = DataService()
-    
     private var books: [Book]?
     var selectedBookIndex: Int
-    var selectedBook = CurrentValueSubject<Book?, Never>(nil)
-    var loadBookError = PassthroughSubject<String, Never>()
     private var subscriptions = Set<AnyCancellable>()
     
     // MARK: - Initializer
     
     init(selectedBookIndex: Int) {
         self.selectedBookIndex = selectedBookIndex
-        loadBooks()
     }
     
     // MARK: - Data ➡️ Output
+    
+    var selectedBook = CurrentValueSubject<Book?, Never>(nil)
+    var loadBookError = PassthroughSubject<String, Never>()
     
     var image: UIImage? {
         // 책 데이터가 로드 됐을때만 이미지 로드
@@ -37,38 +36,6 @@ final class BookViewModel {
         
         return nil
     }
-    
-    var title: String {
-        return selectedBook.value?.attributes.title ?? "n/a"
-    }
-    
-    var author: String {
-        return selectedBook.value?.attributes.author ?? "n/a"
-    }
-    
-    var pages: Int {
-        return selectedBook.value?.attributes.pages ?? 0
-    }
-    
-    var releaseDate: String {
-        return selectedBook.value?.attributes.releaseDate ?? "n/a"
-    }
-    
-    var dedication: String {
-        return selectedBook.value?.attributes.dedication ?? "n/a"
-    }
-    
-    var summary: String {
-        return selectedBook.value?.attributes.summary ?? "n/a"
-    }
-    
-    var wiki: String {
-        return selectedBook.value?.attributes.wiki ?? "n/a"
-    }
-    
-    // MARK: - User Action ➡️ Input
-    
-    
 }
 
 extension BookViewModel {
