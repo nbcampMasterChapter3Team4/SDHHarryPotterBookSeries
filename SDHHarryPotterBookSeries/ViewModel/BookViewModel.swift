@@ -79,11 +79,11 @@ extension BookViewModel {
             switch result {
             case .success(let books):
                 self.books = books
-                selectedBook = CurrentValueSubject(books[selectedBookIndex])
+                selectedBook.send(books[selectedBookIndex])
                 
             case .failure(let error):
                 books = nil
-                selectedBook = CurrentValueSubject(nil)
+                selectedBook.send(nil)
                 
                 let message: String
                 if let dataError = error as? DataService.DataError {
@@ -104,6 +104,6 @@ extension BookViewModel {
     /// 시리즈 버튼 눌렀을 때 selectedBook 변경
     func changeSelectedBook(to selectedBookIndex: Int) {
         self.selectedBookIndex = selectedBookIndex
-        selectedBook = CurrentValueSubject(books?[selectedBookIndex])
+        selectedBook.send(books?[selectedBookIndex])
     }
 }
