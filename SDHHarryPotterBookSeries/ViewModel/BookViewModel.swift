@@ -29,12 +29,7 @@ final class BookViewModel {
     var loadBookError = PassthroughSubject<String, Never>()
     
     var image: UIImage? {
-        // 책 데이터가 로드 됐을때만 이미지 로드
-        if selectedBook.value != nil {
-            return BookImage.allCases[selectedBookIndex].image
-        }
-        
-        return nil
+        return BookImage.allCases[selectedBookIndex].image
     }
 }
 
@@ -49,7 +44,7 @@ extension BookViewModel {
                 selectedBook.send(books[selectedBookIndex])
                 
             case .failure(let error):
-                books = nil
+                self.books = nil
                 selectedBook.send(nil)
                 
                 let message: String
