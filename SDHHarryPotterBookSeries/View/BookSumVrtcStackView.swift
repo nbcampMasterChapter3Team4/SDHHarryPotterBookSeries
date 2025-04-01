@@ -8,7 +8,22 @@
 import UIKit
 import SnapKit
 
+enum SummaryState: String {
+    case expanded = "접기"
+    case folded = "더 보기"
+    case none = ""
+}
+
 final class BookSumVrtcStackView: UIStackView {
+    
+    // MARK: - Properties
+    
+    private var totalSummary = ""
+    private var showingSummary = "" {
+        didSet {
+            sumLabel.text = showingSummary
+        }
+    }
     
     // MARK: - UI Components
     
@@ -40,15 +55,29 @@ final class BookSumVrtcStackView: UIStackView {
     
     private let seeMoreHrizSpacer = UIView.spacer(axis: .horizontal)
     
+    private var seeMoreButtonTitle: SummaryState = .none {
+        didSet {
+            if seeMoreButtonTitle != .none {
+                var config = seeMoreButton.configuration
+                var titleAttributes = AttributeContainer()
+                titleAttributes.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+                config?.attributedTitle = AttributedString(seeMoreButtonTitle.rawValue, attributes: titleAttributes)
+                seeMoreButton.configuration = config
+                
+                seeMoreHrizStack.isHidden = false
+            } else {
+                seeMoreHrizStack.isHidden = true
+            }
+        }
+    }
+    
     private let seeMoreButton: UIButton = {
         var config = UIButton.Configuration.plain()
-        var titleAttributes = AttributeContainer()
-        titleAttributes.font = UIFont.systemFont(ofSize: 14, weight: .bold)
-        config.attributedTitle = AttributedString("더 보기", attributes: titleAttributes)
         let button = UIButton(configuration: config)
         
         return button
     }()
+    
     
     // MARK: - Initializer
     
@@ -68,7 +97,16 @@ final class BookSumVrtcStackView: UIStackView {
     // MARK: - Update UI
     
     func configure(summary: String) {
-        sumLabel.text = summary
+        totalSummary = summary
+        
+        if summary.count >= 450 {
+            showingSummary = String(summary.prefix(450) + "...")
+            seeMoreButtonTitle = .folded
+        } else {
+            showingSummary = summary
+            seeMoreButtonTitle = .none
+        }
+        sumLabel.text = showingSummary
     }
 }
 
@@ -78,6 +116,7 @@ private extension BookSumVrtcStackView {
     func setupUI() {
         setViewHierarchy()
         setConstraints()
+        setButtonAction()
     }
     
     func setViewHierarchy() {
@@ -98,5 +137,19 @@ private extension BookSumVrtcStackView {
         seeMoreButton.snp.makeConstraints {
             $0.height.equalTo(24)
         }
+    }
+    
+    func setButtonAction() {
+        let action = UIAction { [self] _ in
+            
+            if seeMoreButtonTitle == .folded {
+                showingSummary = totalSummary
+                seeMoreButtonTitle = .expanded
+            } else if seeMoreButtonTitle == .expanded {
+                showingSummary = String(totalSummary.prefix(450) + "...")
+                seeMoreButtonTitle = .folded
+            }
+        }
+        seeMoreButton.addAction(action, for: .touchUpInside)
     }
 }

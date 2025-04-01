@@ -43,7 +43,6 @@ final class BookInfoHrizStackView: UIStackView {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.spacing = 8
-        stackView.distribution = .equalSpacing
         
         return stackView
     }()
@@ -69,7 +68,6 @@ final class BookInfoHrizStackView: UIStackView {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.spacing = 8
-        stackView.distribution = .equalSpacing
         
         return stackView
     }()
@@ -95,7 +93,6 @@ final class BookInfoHrizStackView: UIStackView {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.spacing = 8
-        stackView.distribution = .equalSpacing
         
         return stackView
     }()
@@ -124,7 +121,7 @@ final class BookInfoHrizStackView: UIStackView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.axis = .horizontal
-        self.spacing = 16
+        self.spacing = 15
         self.distribution = .fillProportionally
         
         setupUI()

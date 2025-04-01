@@ -112,17 +112,14 @@ private extension BookViewController {
     }
     
     func setConstraints() {
-        let horizontalInset = 20
-        let verticalOffset = 24
-        
         bookTitlelabel.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(horizontalInset)
+            $0.leading.trailing.equalToSuperview().inset(20)
             $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).inset(10)
         }
         
         seriesButton.snp.makeConstraints {
-            $0.leading.greaterThanOrEqualToSuperview().inset(horizontalInset)
-            $0.trailing.lessThanOrEqualToSuperview().inset(horizontalInset)
+            $0.leading.greaterThanOrEqualToSuperview().inset(20)
+            $0.trailing.lessThanOrEqualToSuperview().inset(20)
             $0.top.equalTo(bookTitlelabel.snp.bottom).offset(16)
             $0.width.height.equalTo(44)
             $0.centerX.equalToSuperview()
@@ -145,18 +142,18 @@ private extension BookViewController {
         }
         
         bookDedVrtcStackView.snp.makeConstraints {
-            $0.top.equalTo(bookInfoHrizStackView.snp.bottom).offset(verticalOffset)
-            $0.leading.trailing.equalToSuperview().inset(horizontalInset)
+            $0.top.equalTo(bookInfoHrizStackView.snp.bottom).offset(24)
+            $0.leading.trailing.equalToSuperview().inset(20)
         }
         
         bookSumVrtcStackView.snp.makeConstraints {
-            $0.top.equalTo(bookDedVrtcStackView.snp.bottom).offset(verticalOffset)
-            $0.leading.trailing.equalToSuperview().inset(horizontalInset)
+            $0.top.equalTo(bookDedVrtcStackView.snp.bottom).offset(24)
+            $0.leading.trailing.equalToSuperview().inset(20)
         }
         
         bookChapterVrtcStackView.snp.makeConstraints {
-            $0.top.equalTo(bookSumVrtcStackView.snp.bottom).offset(verticalOffset)
-            $0.leading.trailing.equalToSuperview().inset(horizontalInset)
+            $0.top.equalTo(bookSumVrtcStackView.snp.bottom).offset(24)
+            $0.leading.trailing.equalToSuperview().inset(20)
             $0.bottom.equalToSuperview()
         }
     }
