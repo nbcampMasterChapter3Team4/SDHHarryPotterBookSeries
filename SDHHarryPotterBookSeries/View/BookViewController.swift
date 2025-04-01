@@ -43,7 +43,7 @@ class BookViewController: UIViewController {
     }()
     
     /// 책 데이터 스크롤 뷰
-    private let bookDataScrollView: UIScrollView = {
+    private let bookScrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.showsVerticalScrollIndicator = false
@@ -51,12 +51,8 @@ class BookViewController: UIViewController {
         return scrollView
     }()
     
-    /// 스크롤 뷰 컨텐츠 컨테이너 뷰
-    private let bookDataContentView: UIView = {
-        let view = UIView()
-        
-        return view
-    }()
+    /// 책 데이터 스크롤 뷰의 컨텐츠 뷰
+    private let bookScrollContentView = UIView()
     
     /// 책 정보 영역
     private let bookInfoView = BookInfoView()
@@ -66,6 +62,9 @@ class BookViewController: UIViewController {
     
     /// Summary 영역
     private let bookSummaryView = BookSummaryView()
+    
+    /// Chapter 영역
+    private let bookChapterView = BookChapterView()
     
     // MARK: - Lifecycle
     
@@ -97,59 +96,68 @@ private extension BookViewController {
         self.view.addSubviews(
             bookTitlelabel,
             seriesButton,
-            bookDataScrollView
+            bookScrollView
         )
         
-        bookDataScrollView.addSubviews(
-            bookDataContentView
+        bookScrollView.addSubviews(
+            bookScrollContentView
         )
         
-        bookDataContentView.addSubviews(
+        bookScrollContentView.addSubviews(
             bookInfoView,
             bookDedicationView,
-            bookSummaryView
+            bookSummaryView,
+            bookChapterView
         )
     }
     
     func setConstraints() {
+        let horizontalInset = 20
+        let verticalOffset = 24
+        
         bookTitlelabel.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(20)
             $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).inset(10)
+            $0.leading.trailing.equalToSuperview().inset(horizontalInset)
         }
         
         seriesButton.snp.makeConstraints {
-            $0.leading.greaterThanOrEqualToSuperview().inset(20)
-            $0.trailing.lessThanOrEqualToSuperview().inset(20)
             $0.top.equalTo(bookTitlelabel.snp.bottom).offset(16)
-            $0.centerX.equalToSuperview()
+            $0.leading.greaterThanOrEqualToSuperview().inset(horizontalInset)
+            $0.trailing.lessThanOrEqualToSuperview().inset(horizontalInset)
             $0.width.height.equalTo(44)
+            $0.centerX.equalToSuperview()
         }
         
-        bookDataScrollView.snp.makeConstraints {
-            $0.top.equalTo(seriesButton.snp.bottom).offset(32)
+        bookScrollView.snp.makeConstraints {
+            $0.top.equalTo(seriesButton.snp.bottom).offset(10)
             $0.leading.trailing.bottom.equalTo(self.view.safeAreaLayoutGuide)
         }
         
-        bookDataContentView.snp.makeConstraints {
-            $0.edges.equalTo(bookDataScrollView.contentLayoutGuide)
-            $0.width.equalTo(bookDataScrollView.frameLayoutGuide)
-            $0.height.equalTo(1200)
+        bookScrollContentView.snp.makeConstraints {
+            $0.edges.equalTo(bookScrollView.contentLayoutGuide)
+            $0.width.equalTo(bookScrollView.frameLayoutGuide)
         }
         
         bookInfoView.snp.makeConstraints {
+            $0.top.equalToSuperview().inset(32)
             $0.leading.trailing.equalToSuperview().inset(5)
-            $0.top.equalToSuperview()
             $0.height.equalTo(150)
         }
         
         bookDedicationView.snp.makeConstraints {
-            $0.top.equalTo(bookInfoView.snp.bottom).offset(24)
-            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.top.equalTo(bookInfoView.snp.bottom).offset(verticalOffset)
+            $0.leading.trailing.equalToSuperview().inset(horizontalInset)
         }
         
         bookSummaryView.snp.makeConstraints {
-            $0.top.equalTo(bookDedicationView.snp.bottom).offset(24)
-            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.top.equalTo(bookDedicationView.snp.bottom).offset(verticalOffset)
+            $0.leading.trailing.equalToSuperview().inset(horizontalInset)
+        }
+        
+        bookChapterView.snp.makeConstraints {
+            $0.top.equalTo(bookSummaryView.snp.bottom).offset(verticalOffset)
+            $0.leading.trailing.equalToSuperview().inset(horizontalInset)
+            $0.bottom.equalToSuperview()
         }
     }
     
@@ -170,28 +178,33 @@ private extension BookViewController {
     }
     
     func updateUI(with book: Book?) {
-        if let book = book {
+        if let book = book?.attributes {
             // Level 1
-            bookTitlelabel.text = book.attributes.title
-            seriesButton.titleLabel?.text = String(1)
+            bookTitlelabel.text = book.title
+            seriesButton.configuration?.title = String(1)
             
             // Level 2
-            let convertedDate = book.attributes.releaseDate.toDate()?.toString()
+            let convertedDate = book.releaseDate.toDate()?.toString()
             bookInfoView.configure(
                 image: viewModel.image,
-                title: book.attributes.title,
-                author: book.attributes.author,
-                releaseDate: convertedDate ?? book.attributes.releaseDate,
-                pages: String(book.attributes.pages)
+                title: book.title,
+                author: book.author,
+                releaseDate: convertedDate ?? book.releaseDate,
+                pages: String(book.pages)
             )
             
             // Level 3
-            bookDedicationView.configure(dedication: book.attributes.dedication)
-            bookSummaryView.configure(summary: book.attributes.summary)
+            bookDedicationView.configure(dedication: book.dedication)
+            bookSummaryView.configure(summary: book.summary)
+            
+            // Level 4
+            bookChapterView.configure(chapters: book.chapters)
+            
         } else {
             // 예외 처리 1
             // - 데이터 없을 때 기본값 표시
             let defaultValue = "N/A"
+            let defaultChapter = Chapter(title: defaultValue)
             
             // Level 1
             bookTitlelabel.text = defaultValue
@@ -209,6 +222,9 @@ private extension BookViewController {
             // Level 3
             bookDedicationView.configure(dedication: defaultValue)
             bookSummaryView.configure(summary: defaultValue)
+            
+            // Level 4
+            bookChapterView.configure(chapters: [defaultChapter])
         }
     }
 }

@@ -9,16 +9,19 @@
 import Foundation
 
 // MARK: - BookResponse
+
 struct BookResponse: Codable {
     let data: [Book]
 }
 
 // MARK: - Book
+
 struct Book: Codable {
     let attributes: Attributes
 }
 
 // MARK: - Attributes
+
 struct Attributes: Codable {
     let title, author: String
     let pages: Int
@@ -34,6 +37,7 @@ struct Attributes: Codable {
 }
 
 // MARK: - Chapter
+
 struct Chapter: Codable {
     let title: String
 }
