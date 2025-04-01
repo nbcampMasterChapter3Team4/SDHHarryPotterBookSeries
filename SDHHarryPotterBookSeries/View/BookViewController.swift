@@ -75,6 +75,7 @@ class BookViewController: UIViewController {
         
         setupUI()
         bind()
+        // 뷰 모델의 데이터를 바인딩한 후 책 데이터를 로드해야 오류 발생시 Alert가 정상적으로 표시됨
         viewModel.loadBooks()
     }
     

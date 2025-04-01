@@ -49,29 +49,30 @@ final class BookSummaryView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-}
-
-// MARK: - UI Methods
-
-extension BookSummaryView {
-    private func setupUI() {
-        setViewHierarchy()
-        setConstraints()
-    }
     
-    private func setViewHierarchy() {
-        self.addSubview(sumVrtcStackView)
-        sumVrtcStackView.addArrangedSubviews(infoSumLabel, sumLabel)
-    }
-    
-    private func setConstraints() {
-        sumVrtcStackView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
-    }
+    // MARK: - Update UI
     
     func configure(summary: String) {
         sumLabel.text = summary
     }
 }
 
+// MARK: - UI Methods
+
+private extension BookSummaryView {
+    func setupUI() {
+        setViewHierarchy()
+        setConstraints()
+    }
+    
+    func setViewHierarchy() {
+        self.addSubview(sumVrtcStackView)
+        sumVrtcStackView.addArrangedSubviews(infoSumLabel, sumLabel)
+    }
+    
+     func setConstraints() {
+        sumVrtcStackView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+    }
+}

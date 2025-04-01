@@ -49,28 +49,30 @@ final class BookDedicationView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    // MARK: - Update UI
+    
+    func configure(dedication: String) {
+        dedLabel.text = dedication
+    }
 }
 
 // MARK: - UI Methods
 
-extension BookDedicationView {
-    private func setupUI() {
+private extension BookDedicationView {
+    func setupUI() {
         setViewHierarchy()
         setConstraints()
     }
     
-    private func setViewHierarchy() {
+    func setViewHierarchy() {
         self.addSubview(dedVrtcStackView)
         dedVrtcStackView.addArrangedSubviews(infoDedLabel, dedLabel)
     }
     
-    private func setConstraints() {
+    func setConstraints() {
         dedVrtcStackView.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
-    }
-    
-    func configure(dedication: String) {
-        dedLabel.text = dedication
     }
 }

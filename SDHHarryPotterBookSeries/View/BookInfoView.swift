@@ -137,40 +137,8 @@ final class BookInfoView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-}
-
-// MARK: - UI Methods
-
-extension BookInfoView {
-    private func setupUI() {
-        setViewHierarchy()
-        setConstraints()
-    }
     
-    private func setViewHierarchy() {
-        self.addSubview(bookInfoHrizStackView)
-        bookInfoHrizStackView.addArrangedSubviews(bookImageView, textInfoVrtcStackView)
-        textInfoVrtcStackView.addArrangedSubviews(
-            infoTitleLabel,
-            infoAuthorHrizStackView,
-            infoReleasedHrizStackView,
-            infoPagesHrizStackView
-        )
-        infoAuthorHrizStackView.addArrangedSubviews(infoAuthorLabel, authorLabel)
-        infoReleasedHrizStackView.addArrangedSubviews(infoReleasedLabel, releasedLabel)
-        infoPagesHrizStackView.addArrangedSubviews(infoPagesLabel, pagesLabel)
-    }
-    
-    private func setConstraints() {
-        bookInfoHrizStackView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
-        
-        bookImageView.snp.makeConstraints {
-            $0.width.equalTo(100)
-            $0.height.equalTo(bookImageView.snp.width).multipliedBy(1.5)
-        }
-    }
+    // MARK: - Update UI
     
     func configure(
         image: UIImage?,
@@ -184,5 +152,39 @@ extension BookInfoView {
         authorLabel.text = author
         releasedLabel.text = releaseDate
         pagesLabel.text = pages
+    }
+}
+
+// MARK: - UI Methods
+
+private extension BookInfoView {
+    func setupUI() {
+        setViewHierarchy()
+        setConstraints()
+    }
+    
+    func setViewHierarchy() {
+        self.addSubview(bookInfoHrizStackView)
+        bookInfoHrizStackView.addArrangedSubviews(bookImageView, textInfoVrtcStackView)
+        textInfoVrtcStackView.addArrangedSubviews(
+            infoTitleLabel,
+            infoAuthorHrizStackView,
+            infoReleasedHrizStackView,
+            infoPagesHrizStackView
+        )
+        infoAuthorHrizStackView.addArrangedSubviews(infoAuthorLabel, authorLabel)
+        infoReleasedHrizStackView.addArrangedSubviews(infoReleasedLabel, releasedLabel)
+        infoPagesHrizStackView.addArrangedSubviews(infoPagesLabel, pagesLabel)
+    }
+    
+    func setConstraints() {
+        bookInfoHrizStackView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+        
+        bookImageView.snp.makeConstraints {
+            $0.width.equalTo(100)
+            $0.height.equalTo(bookImageView.snp.width).multipliedBy(1.5)
+        }
     }
 }
