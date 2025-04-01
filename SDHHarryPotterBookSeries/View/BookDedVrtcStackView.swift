@@ -1,5 +1,5 @@
 //
-//  BookDedicationView.swift
+//  BookDedVrtcStackView.swift
 //  SDHHarryPotterBookSeries
 //
 //  Created by 서동환 on 3/28/25.
@@ -8,18 +8,9 @@
 import UIKit
 import SnapKit
 
-final class BookDedicationView: UIView {
+final class BookDedVrtcStackView: UIStackView {
     
     // MARK: - UI Components
-    
-    private let dedVrtcStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.spacing = 8
-        stackView.alignment = .leading
-        
-        return stackView
-    }()
     
     private let infoDedLabel: UILabel = {
         let label = UILabel()
@@ -43,10 +34,14 @@ final class BookDedicationView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.axis = .vertical
+        self.spacing = 8
+        self.alignment = .leading
+        
         setupUI()
     }
     
-    required init?(coder: NSCoder) {
+    required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -59,20 +54,12 @@ final class BookDedicationView: UIView {
 
 // MARK: - UI Methods
 
-private extension BookDedicationView {
+private extension BookDedVrtcStackView {
     func setupUI() {
         setViewHierarchy()
-        setConstraints()
     }
     
     func setViewHierarchy() {
-        self.addSubview(dedVrtcStackView)
-        dedVrtcStackView.addArrangedSubviews(infoDedLabel, dedLabel)
-    }
-    
-    func setConstraints() {
-        dedVrtcStackView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
+        self.addArrangedSubviews(infoDedLabel, dedLabel)
     }
 }

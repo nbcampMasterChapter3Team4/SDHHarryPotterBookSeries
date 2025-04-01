@@ -1,5 +1,5 @@
 //
-//  BookInfoView.swift
+//  BookInfoHrizStackView.swift
 //  SDHHarryPotterBookSeries
 //
 //  Created by 서동환 on 3/28/25.
@@ -8,19 +8,9 @@
 import UIKit
 import SnapKit
 
-final class BookInfoView: UIView {
+final class BookInfoHrizStackView: UIStackView {
     
     // MARK: - UI Components
-    
-    private let bookInfoHrizStackView: UIStackView = {
-        var stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.spacing = 16
-        stackView.isLayoutMarginsRelativeArrangement = true
-        stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 0)
-        
-        return stackView
-    }()
     
     let bookImageView: UIImageView = {
         var imageView = UIImageView()
@@ -131,10 +121,15 @@ final class BookInfoView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.axis = .horizontal
+        self.spacing = 16
+        self.isLayoutMarginsRelativeArrangement = true
+        self.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 0)
+        
         setupUI()
     }
     
-    required init?(coder: NSCoder) {
+    required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -157,15 +152,14 @@ final class BookInfoView: UIView {
 
 // MARK: - UI Methods
 
-private extension BookInfoView {
+private extension BookInfoHrizStackView {
     func setupUI() {
         setViewHierarchy()
         setConstraints()
     }
     
     func setViewHierarchy() {
-        self.addSubview(bookInfoHrizStackView)
-        bookInfoHrizStackView.addArrangedSubviews(bookImageView, textInfoVrtcStackView)
+        self.addArrangedSubviews(bookImageView, textInfoVrtcStackView)
         textInfoVrtcStackView.addArrangedSubviews(
             infoTitleLabel,
             infoAuthorHrizStackView,
@@ -178,10 +172,6 @@ private extension BookInfoView {
     }
     
     func setConstraints() {
-        bookInfoHrizStackView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
-        
         bookImageView.snp.makeConstraints {
             $0.width.equalTo(100)
             $0.height.equalTo(bookImageView.snp.width).multipliedBy(1.5)

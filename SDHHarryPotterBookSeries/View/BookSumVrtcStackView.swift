@@ -1,5 +1,5 @@
 //
-//  BookSummaryView.swift
+//  BookSumVrtcStackView.swift
 //  SDHHarryPotterBookSeries
 //
 //  Created by 서동환 on 3/31/25.
@@ -8,18 +8,9 @@
 import UIKit
 import SnapKit
 
-final class BookSummaryView: UIView {
+final class BookSumVrtcStackView: UIStackView {
     
     // MARK: - UI Components
-    
-    private let sumVrtcStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.spacing = 8
-        stackView.alignment = .leading
-        
-        return stackView
-    }()
     
     private let infoSumLabel: UILabel = {
         let label = UILabel()
@@ -43,10 +34,14 @@ final class BookSummaryView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.axis = .vertical
+        self.spacing = 8
+        self.alignment = .leading
+        
         setupUI()
     }
     
-    required init?(coder: NSCoder) {
+    required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -59,20 +54,12 @@ final class BookSummaryView: UIView {
 
 // MARK: - UI Methods
 
-private extension BookSummaryView {
+private extension BookSumVrtcStackView {
     func setupUI() {
         setViewHierarchy()
-        setConstraints()
     }
     
     func setViewHierarchy() {
-        self.addSubview(sumVrtcStackView)
-        sumVrtcStackView.addArrangedSubviews(infoSumLabel, sumLabel)
-    }
-    
-     func setConstraints() {
-        sumVrtcStackView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
+        self.addArrangedSubviews(infoSumLabel, sumLabel)
     }
 }
