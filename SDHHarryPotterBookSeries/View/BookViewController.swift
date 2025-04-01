@@ -42,6 +42,22 @@ class BookViewController: UIViewController {
         return button
     }()
     
+    /// 책 데이터 스크롤 뷰
+    private let bookDataScrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.showsHorizontalScrollIndicator = false
+        scrollView.showsVerticalScrollIndicator = false
+        
+        return scrollView
+    }()
+    
+    /// 스크롤 뷰 컨텐츠 컨테이너 뷰
+    private let bookDataContentView: UIView = {
+        let view = UIView()
+        
+        return view
+    }()
+    
     /// 책 정보 영역
     private let bookInfoView = BookInfoView()
     
@@ -80,6 +96,14 @@ private extension BookViewController {
         self.view.addSubviews(
             bookTitlelabel,
             seriesButton,
+            bookDataScrollView
+        )
+        
+        bookDataScrollView.addSubviews(
+            bookDataContentView
+        )
+        
+        bookDataContentView.addSubviews(
             bookInfoView,
             bookDedicationView,
             bookSummaryView
@@ -100,9 +124,20 @@ private extension BookViewController {
             $0.width.height.equalTo(44)
         }
         
-        bookInfoView.snp.makeConstraints {
-            $0.leading.trailing.equalTo(self.view.safeAreaLayoutGuide).inset(5)
+        bookDataScrollView.snp.makeConstraints {
             $0.top.equalTo(seriesButton.snp.bottom).offset(32)
+            $0.leading.trailing.bottom.equalTo(self.view.safeAreaLayoutGuide)
+        }
+        
+        bookDataContentView.snp.makeConstraints {
+            $0.edges.equalTo(bookDataScrollView.contentLayoutGuide)
+            $0.width.equalTo(bookDataScrollView.frameLayoutGuide)
+            $0.height.equalTo(1200)
+        }
+        
+        bookInfoView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview().inset(5)
+            $0.top.equalToSuperview()
             $0.height.equalTo(150)
         }
         
