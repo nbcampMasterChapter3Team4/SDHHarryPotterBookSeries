@@ -116,14 +116,14 @@ private extension BookViewController {
         let verticalOffset = 24
         
         bookTitlelabel.snp.makeConstraints {
-            $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).inset(10)
             $0.leading.trailing.equalToSuperview().inset(horizontalInset)
+            $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).inset(10)
         }
         
         seriesButton.snp.makeConstraints {
-            $0.top.equalTo(bookTitlelabel.snp.bottom).offset(16)
             $0.leading.greaterThanOrEqualToSuperview().inset(horizontalInset)
             $0.trailing.lessThanOrEqualToSuperview().inset(horizontalInset)
+            $0.top.equalTo(bookTitlelabel.snp.bottom).offset(16)
             $0.width.height.equalTo(44)
             $0.centerX.equalToSuperview()
         }
@@ -139,8 +139,8 @@ private extension BookViewController {
         }
         
         bookInfoHrizStackView.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(32)
             $0.leading.trailing.equalTo(self.view.safeAreaLayoutGuide).inset(5)
+            $0.top.equalToSuperview().inset(32)
             $0.height.equalTo(150)
         }
         
