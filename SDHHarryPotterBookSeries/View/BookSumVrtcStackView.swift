@@ -30,6 +30,26 @@ final class BookSumVrtcStackView: UIStackView {
         return label
     }()
     
+    private let seeMoreHrizStack: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.alignment = .trailing
+        
+        return stackView
+    }()
+    
+    private let seeMoreHrizSpacer = UIView.spacer(axis: .horizontal)
+    
+    private let seeMoreButton: UIButton = {
+        var config = UIButton.Configuration.plain()
+        var titleAttributes = AttributeContainer()
+        titleAttributes.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+        config.attributedTitle = AttributedString("더 보기", attributes: titleAttributes)
+        let button = UIButton(configuration: config)
+        
+        return button
+    }()
+    
     // MARK: - Initializer
     
     override init(frame: CGRect) {
@@ -57,9 +77,26 @@ final class BookSumVrtcStackView: UIStackView {
 private extension BookSumVrtcStackView {
     func setupUI() {
         setViewHierarchy()
+        setConstraints()
     }
     
     func setViewHierarchy() {
-        self.addArrangedSubviews(infoSumLabel, sumLabel)
+        self.addArrangedSubviews(
+            infoSumLabel,
+            sumLabel,
+            seeMoreHrizStack
+        )
+        
+        seeMoreHrizStack.addArrangedSubviews(seeMoreHrizSpacer, seeMoreButton)
+    }
+    
+    func setConstraints() {
+        seeMoreHrizStack.snp.makeConstraints {
+            $0.width.equalToSuperview()
+        }
+        
+        seeMoreButton.snp.makeConstraints {
+            $0.height.equalTo(24)
+        }
     }
 }

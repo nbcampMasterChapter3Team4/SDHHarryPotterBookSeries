@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import SnapKit
 
 final class BookChapterVrtcStackView: UIStackView {
     
@@ -45,6 +44,7 @@ final class BookChapterVrtcStackView: UIStackView {
         self.arrangedSubviews.filter { $0.tag != 100 }.forEach {
             self.removeArrangedSubview($0)
         }
+        
         // 뷰 보임 방지 및 메모리 해제
         subviews.forEach { $0.removeFromSuperview() }
         

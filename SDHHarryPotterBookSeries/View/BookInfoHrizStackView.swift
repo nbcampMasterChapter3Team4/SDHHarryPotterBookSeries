@@ -12,6 +12,8 @@ final class BookInfoHrizStackView: UIStackView {
     
     // MARK: - UI Components
     
+    private let bookInfoHrizSpacer = UIView.spacer(axis: .horizontal)
+    
     let bookImageView: UIImageView = {
         var imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
@@ -24,8 +26,6 @@ final class BookInfoHrizStackView: UIStackView {
         stackView.axis = .vertical
         stackView.alignment = .leading
         stackView.spacing = 8
-        stackView.isLayoutMarginsRelativeArrangement = true
-        stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 24, trailing: 0)
         
         return stackView
     }()
@@ -117,14 +117,15 @@ final class BookInfoHrizStackView: UIStackView {
         return label
     }()
     
+    private let textInfoVrtcSpacer = UIView.spacer(axis: .vertical)
+    
     // MARK: - Initializer
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.axis = .horizontal
         self.spacing = 16
-        self.isLayoutMarginsRelativeArrangement = true
-        self.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 0)
+        self.distribution = .fillProportionally
         
         setupUI()
     }
@@ -159,12 +160,13 @@ private extension BookInfoHrizStackView {
     }
     
     func setViewHierarchy() {
-        self.addArrangedSubviews(bookImageView, textInfoVrtcStackView)
+        self.addArrangedSubviews(bookInfoHrizSpacer, bookImageView, textInfoVrtcStackView)
         textInfoVrtcStackView.addArrangedSubviews(
             infoTitleLabel,
             infoAuthorHrizStackView,
             infoReleasedHrizStackView,
-            infoPagesHrizStackView
+            infoPagesHrizStackView,
+            textInfoVrtcSpacer
         )
         infoAuthorHrizStackView.addArrangedSubviews(infoAuthorLabel, authorLabel)
         infoReleasedHrizStackView.addArrangedSubviews(infoReleasedLabel, releasedLabel)

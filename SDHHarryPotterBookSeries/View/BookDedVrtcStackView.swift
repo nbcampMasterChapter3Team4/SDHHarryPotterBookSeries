@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import SnapKit
 
 final class BookDedVrtcStackView: UIStackView {
     
@@ -60,6 +59,9 @@ private extension BookDedVrtcStackView {
     }
     
     func setViewHierarchy() {
-        self.addArrangedSubviews(infoDedLabel, dedLabel)
+        self.addArrangedSubviews(
+            infoDedLabel,
+            dedLabel
+        )
     }
 }

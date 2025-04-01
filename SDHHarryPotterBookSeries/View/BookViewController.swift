@@ -140,7 +140,7 @@ private extension BookViewController {
         
         bookInfoHrizStackView.snp.makeConstraints {
             $0.top.equalToSuperview().inset(32)
-            $0.leading.trailing.equalToSuperview().inset(5)
+            $0.leading.trailing.equalTo(self.view.safeAreaLayoutGuide).inset(5)
             $0.height.equalTo(150)
         }
         
