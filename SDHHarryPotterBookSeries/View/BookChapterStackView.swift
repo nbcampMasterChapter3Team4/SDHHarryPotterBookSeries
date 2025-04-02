@@ -40,13 +40,19 @@ final class BookChapterStackView: UIStackView {
     
     func configure(chapters: [Chapter]) {
         // stackView에서 기존 arrangedSubView들 삭제(infoChapterLabel 제외)
-        let oldSubviews = self.subviews.filter { $0.tag != 100 }
-        self.arrangedSubviews.filter { $0.tag != 100 }.forEach {
-            self.removeArrangedSubview($0)
+        let oldSubviews = self.subviews
+        self.arrangedSubviews.forEach {
+            if $0.tag != 100 {
+                self.removeArrangedSubview($0)
+            }
         }
         
         // 뷰 보임 방지 및 메모리 해제
-        oldSubviews.forEach { $0.removeFromSuperview() }
+        oldSubviews.forEach {
+            if $0.tag != 100 {
+                $0.removeFromSuperview()
+            }
+        }
         
         // arrangedSubView로 챕터 추가
         chapters.forEach { chapter in

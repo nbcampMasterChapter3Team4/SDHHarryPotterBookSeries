@@ -13,48 +13,16 @@ final class SeriesStackView: UIStackView {
     // MARK: - Properties
     
     weak var sendIndexDelegate: SendIndexDelegate?
+    var selectedBookIndex = 0
     
-    private var bookCount = 0 {
-        didSet {
-            if bookCount > 0 {
-                // stackView에서 기존 arrangedSubView들 삭제
-                let oldSubviews = self.subviews
-                self.arrangedSubviews.forEach {
-                    self.removeArrangedSubview($0)
-                }
-                // 뷰 보임 방지 및 메모리 해제
-                oldSubviews.forEach { $0.removeFromSuperview() }
-                
-                // arrangedSubView로 챕터 추가
-                for index in 0..<bookCount {
-                    let seriesButton = makeSeriesButton(title: String(index + 1))
-                    self.addArrangedSubview(seriesButton)
-                }
-            }
-        }
-    }
-    
-    // MARK: - UI Components
-    
-    /*
-     예외 처리 2
-     - 데이터 로드 실패 시 미동작 버튼 보임
-     */
-    /// Book 시리즈 버튼(Book 데이터 로드 실패 시 보임)
-    private let seriesButton: UIButton = {
-        var config = UIButton.Configuration.filled()
-        
-        var titleAttributes = AttributeContainer()
-        titleAttributes.font = UIFont.systemFont(ofSize: 16)
-        config.attributedTitle = AttributedString("0", attributes: titleAttributes)
-        
-        config.titleAlignment = .center
-        
-        let button = UIButton(configuration: config)
-        button.clipsToBounds = true
-        
-        return button
-    }()
+    let selectedButtonColor = (
+        titleColor: UIColor.white,
+        backgroundColor: UIColor.tintColor
+    )
+    let normalButtonColor = (
+        titleColor: UIColor.tintColor,
+        backgroundColor: UIColor.systemGray5.resolvedColor(with: UITraitCollection(userInterfaceStyle: .light))
+    )
     
     // MARK: - Initializer
     
@@ -62,8 +30,6 @@ final class SeriesStackView: UIStackView {
         super.init(frame: frame)
         self.axis = .horizontal
         self.spacing = 10
-        
-        setupUI()
     }
     
     required init(coder: NSCoder) {
@@ -83,49 +49,73 @@ final class SeriesStackView: UIStackView {
     // MARK: - Update UI
     
     func configure(bookCount: Int) {
-        self.bookCount = bookCount
+        if bookCount > 0 {
+            removeSeriesButtons()
+            
+            // arrangedSubView로 챕터 추가
+            for index in 0..<bookCount {
+                let seriesButton = makeSeriesButton(title: String(index + 1))
+                if seriesButton.tag - 1 == selectedBookIndex {
+                    seriesButton.setTitleColor(selectedButtonColor.titleColor, for: .normal)
+                    seriesButton.backgroundColor = selectedButtonColor.backgroundColor
+                }
+                self.addArrangedSubview(seriesButton)
+            }
+        } else {
+            /*
+             예외 처리 2
+             - 데이터 로드 실패 시 미동작 버튼 보임
+             */
+            removeSeriesButtons()
+            
+            // 기본 버튼 추가
+            let defaultButton = makeSeriesButton(title: "0")
+            self.addArrangedSubview(defaultButton)
+        }
     }
 }
 
 // MARK: - UI Methods
 
 private extension SeriesStackView {
-    func setupUI() {
-        setViewHierarchy()
-        setConstraints()
-    }
-    
-    func setViewHierarchy() {
-        self.addArrangedSubview(seriesButton)
-    }
-    
-    func setConstraints() {
-        seriesButton.snp.makeConstraints {
-            $0.width.height.equalTo(44)
-            $0.centerX.equalToSuperview()
-        }
-    }
-    
     func makeSeriesButton(title: String) -> UIButton {
-        var config = UIButton.Configuration.filled()
-        
-        var titleAttributes = AttributeContainer()
-        titleAttributes.font = UIFont.systemFont(ofSize: 16)
-        config.attributedTitle = AttributedString(title, attributes: titleAttributes)
-        
-        config.titleAlignment = .center
-        
-        let button = UIButton(configuration: config)
+        let button = UIButton()
+        button.setTitle(title, for: .normal)
+        button.setTitleColor(normalButtonColor.titleColor, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+        button.titleLabel?.textAlignment = .center
         button.clipsToBounds = true
+        button.backgroundColor = normalButtonColor.backgroundColor
         
-        button.tag = Int(title) ?? 0
-        button.addTarget(self, action: #selector(seriesButtonTarget), for: .touchUpInside)
+        if title != "0" {  // 기본 버튼이 아닐 때
+            button.tag = Int(title) ?? 0
+            button.addTarget(self, action: #selector(seriesButtonTarget), for: .touchUpInside)
+        }
         
         return button
+    }
+    
+    /// stackView에서 기존 arrangedSubView들 삭제
+    func removeSeriesButtons() {
+        let oldSubviews = self.subviews
+        self.arrangedSubviews.forEach {
+            self.removeArrangedSubview($0)
+        }
+        // 뷰 보임 방지 및 메모리 해제
+        oldSubviews.forEach { $0.removeFromSuperview() }
     }
     
     /// UIButton의 tag(=title) - 1을 보냄
     @objc func seriesButtonTarget(sender: UIButton) {
         sendIndexDelegate?.sendIndex(index: sender.tag - 1)
+        
+        for subview in self.arrangedSubviews {
+            if let button = subview as? UIButton {
+                button.setTitleColor(normalButtonColor.titleColor, for: .normal)
+                button.backgroundColor = normalButtonColor.backgroundColor
+            }
+        }
+        sender.setTitleColor(selectedButtonColor.titleColor, for: .normal)
+        sender.backgroundColor = selectedButtonColor.backgroundColor
     }
 }

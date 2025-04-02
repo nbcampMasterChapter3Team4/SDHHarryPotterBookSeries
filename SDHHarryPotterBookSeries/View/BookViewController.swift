@@ -25,6 +25,7 @@ class BookViewController: UIViewController {
     private var selectedBookIndex = 0 {
         didSet {
             viewModel.selectedBookIndex = selectedBookIndex
+            seriesStackView.selectedBookIndex = selectedBookIndex
             bookSummaryStackView.selectedBookIndex = selectedBookIndex
             saveSelectedBookIndex()
         }
@@ -41,6 +42,7 @@ class BookViewController: UIViewController {
         label.font = .systemFont(ofSize: 24, weight: .bold)
         label.textAlignment = .center
         label.numberOfLines = 0
+        label.textColor = .black
         
         return label
     }()
@@ -119,7 +121,6 @@ private extension BookViewController {
             bookScrollView
         )
         
-        // TODO: - 시리즈 가운데 정렬
         seriesScrollView.addSubview(seriesScrollContentView)
         seriesScrollContentView.addSubview(seriesStackView)
         
@@ -133,15 +134,18 @@ private extension BookViewController {
     }
     
     func setConstraints() {
+        // Book 제목 영역
         bookTitlelabel.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(20)
             $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).inset(10)
         }
         
+        // TODO: - 시리즈 가운데 정렬
+        // 시리즈 버튼 영역
         seriesScrollView.snp.makeConstraints {
             $0.top.equalTo(bookTitlelabel.snp.bottom).offset(16)
             $0.leading.trailing.equalTo(self.view.safeAreaLayoutGuide)
-            $0.height.equalTo(44)
+            $0.height.equalTo(40)
         }
         
         seriesScrollContentView.snp.makeConstraints {
@@ -155,6 +159,7 @@ private extension BookViewController {
             $0.centerX.equalToSuperview()
         }
         
+        // Book 데이터 스크롤 영역
         bookScrollView.snp.makeConstraints {
             $0.top.equalTo(seriesScrollView.snp.bottom).offset(10)
             $0.leading.trailing.bottom.equalTo(self.view.safeAreaLayoutGuide)
@@ -165,6 +170,7 @@ private extension BookViewController {
             $0.width.equalTo(bookScrollView.frameLayoutGuide)
         }
         
+        // Book 정보 영역
         bookInfoStackView.snp.makeConstraints {
             $0.leading.trailing.equalTo(self.view.safeAreaLayoutGuide).inset(5)
             $0.top.equalToSuperview().inset(32)
