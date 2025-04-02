@@ -241,7 +241,7 @@ private extension BookViewController {
         } else {
             /*
              예외 처리 1
-             - 데이터 로드 실패시 기본값 표시
+             - 데이터 로드 실패 시 기본값 표시
              */
             let defaultValue = "N/A"
             let defaultChapter = Chapter(title: defaultValue)

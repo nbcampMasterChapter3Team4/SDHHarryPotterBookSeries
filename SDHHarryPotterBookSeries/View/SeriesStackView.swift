@@ -40,7 +40,7 @@ final class SeriesStackView: UIStackView {
      예외 처리 2
      - 데이터 로드 실패 시 미동작 버튼 보임
      */
-    /// Book 시리즈 버튼(Book 데이터 로드 실패시 보임)
+    /// Book 시리즈 버튼(Book 데이터 로드 실패 시 보임)
     private let seriesButton: UIButton = {
         var config = UIButton.Configuration.filled()
         
@@ -56,21 +56,12 @@ final class SeriesStackView: UIStackView {
         return button
     }()
     
-    /// Book 데이터 스크롤 뷰
-    private let bookVrtcScrollView: UIScrollView = {
-        let scrollView = UIScrollView()
-        scrollView.showsHorizontalScrollIndicator = false
-        scrollView.showsVerticalScrollIndicator = false
-        
-        return scrollView
-    }()
-    
     // MARK: - Initializer
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.axis = .horizontal
-        self.spacing = 8
+        self.spacing = 10
         
         setupUI()
     }
@@ -84,7 +75,7 @@ final class SeriesStackView: UIStackView {
         
         let subviews = self.arrangedSubviews
         subviews.forEach { subview in
-            subview.snp.makeConstraints { $0.width.height.equalTo(44) }
+            subview.snp.makeConstraints { $0.width.height.equalTo(40) }
             subview.layer.cornerRadius = subview.frame.height / 2
         }
     }
