@@ -7,6 +7,7 @@
 
 import UIKit
 
+/// Dedication 영역
 final class BookDedicationStackView: UIStackView {
     
     // MARK: - UI Components

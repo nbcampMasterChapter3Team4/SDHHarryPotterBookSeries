@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 
+/// Book 시리즈 영역
 final class SeriesStackView: UIStackView {
     
     // MARK: - Properties

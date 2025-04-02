@@ -28,6 +28,7 @@ enum SummaryState: Int, CaseIterable {
     }
 }
 
+/// Summary 영역
 final class BookSummaryStackView: UIStackView {
     
     // MARK: - Properties

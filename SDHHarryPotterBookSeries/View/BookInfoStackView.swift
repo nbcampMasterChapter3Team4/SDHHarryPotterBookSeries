@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 
+/// Book 정보 영역
 final class BookInfoStackView: UIStackView {
     
     // MARK: - UI Components
@@ -18,7 +19,7 @@ final class BookInfoStackView: UIStackView {
     let bookImageView: UIImageView = {
         var imageView = UIImageView()
         /*
-         bookImageView 비율에 맞지 않는 이미지가 들어오더라도, 
+         bookImageView 비율에 맞지 않는 이미지가 들어오더라도,
          레이아웃이 비어보이지 않도록 scaleAspectFill로 설정
         */
         imageView.contentMode = .scaleAspectFill

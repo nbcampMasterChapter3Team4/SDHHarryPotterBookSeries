@@ -7,6 +7,7 @@
 
 import UIKit
 
+/// Chapter 영역
 final class BookChapterStackView: UIStackView {
     
     // MARK: - UI Components
