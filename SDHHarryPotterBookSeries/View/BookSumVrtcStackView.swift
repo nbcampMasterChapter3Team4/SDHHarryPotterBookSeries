@@ -12,18 +12,18 @@ import SnapKit
 /// Summary의 상태를 나타내는 enum
 enum SummaryState: Int, CaseIterable {
     case none
-    case expanded
     case folded
+    case expanded
     
     /// Summary의 상태에 따라 title을 반환함
     var buttonTitle: String {
         switch self {
         case .none:
             return ""
-        case .expanded:
-            return "접기"
         case .folded:
             return "더 보기"
+        case .expanded:
+            return "접기"
         }
     }
 }
@@ -32,7 +32,7 @@ final class BookSumVrtcStackView: UIStackView {
     
     // MARK: - Properties
     
-    /// Summary의 상태가 저장되어있는 UserDefaults의 Key값
+    /// UserDefaults에서 Summary의 상태가 저장되어있는 Key값
     private var summaryStateKey = "summaryState"
     /// 전체 Summary
     private var totalSummary = ""
@@ -193,13 +193,13 @@ private extension BookSumVrtcStackView {
 // MARK: - Private Methods
 
 extension BookSumVrtcStackView {
-    /// UserDefaults로부터 summaryState 값 로드(rawValue)
+    /// UserDefaults ➡️ summaryState 값 로드(rawValue)
     func loadSummaryState() {
         let value = UserDefaults.standard.integer(forKey: summaryStateKey)
         summaryState = SummaryState.allCases[value]
     }
     
-    /// UserDefaults에 summaryState 값 저장(rawValue)
+    /// UserDefaults ⬅️ summaryState 값 저장(rawValue)
     func saveSummaryState() {
         UserDefaults.standard.set(summaryState.rawValue, forKey: summaryStateKey)
     }

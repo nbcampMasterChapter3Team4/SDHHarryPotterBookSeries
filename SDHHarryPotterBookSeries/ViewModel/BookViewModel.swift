@@ -30,7 +30,7 @@ final class BookViewModel {
     var bookCount = CurrentValueSubject<Int, Never>(0)
     /// 현재 표시하고 있는 Book
     var selectedBook = CurrentValueSubject<Book?, Never>(nil)
-    /// Book 데이터 로드 중 에러 메세지
+    /// Book 데이터 로드 중 발생한 에러 메세지
     var loadBookError = PassthroughSubject<String, Never>()
     
     /// Book 사진
@@ -70,6 +70,7 @@ extension BookViewModel {
         }
     }
     
+    // TODO: 아직 완전히 구현 ❌
     /// 시리즈 버튼 눌렀을 때 selectedBook 변경
     func changeSelectedBook(to selectedBookIndex: Int) {
         self.selectedBookIndex = selectedBookIndex
