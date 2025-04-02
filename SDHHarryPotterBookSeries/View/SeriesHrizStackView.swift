@@ -12,28 +12,24 @@ final class SeriesHrizStackView: UIStackView {
     
     // MARK: - Properties
     
+    weak var sendIndexDelegate: SendIndexDelegate?
+    
     private var bookCount = 0 {
         didSet {
-            // stackView에서 기존 arrangedSubView들 삭제
-            let oldSubviews = self.subviews
-            self.arrangedSubviews.forEach {
-                self.removeArrangedSubview($0)
-            }
-            // 뷰 보임 방지 및 메모리 해제
-            oldSubviews.forEach { $0.removeFromSuperview() }
-            
-            // arrangedSubView로 챕터 추가
-            for index in 0..<bookCount {
-                let seriesButton = makeSeriesButton(title: String(index + 1))
-                self.addArrangedSubview(seriesButton)
-            }
-            
-            let newSubviews = self.arrangedSubviews
-            newSubviews.forEach { subview in
-                subview.snp.makeConstraints {
-                    $0.width.height.equalTo(44)
+            if bookCount > 0 {
+                // stackView에서 기존 arrangedSubView들 삭제
+                let oldSubviews = self.subviews
+                self.arrangedSubviews.forEach {
+                    self.removeArrangedSubview($0)
                 }
-                subview.layer.cornerRadius = subview.frame.height / 2
+                // 뷰 보임 방지 및 메모리 해제
+                oldSubviews.forEach { $0.removeFromSuperview() }
+                
+                // arrangedSubView로 챕터 추가
+                for index in 0..<bookCount {
+                    let seriesButton = makeSeriesButton(title: String(index + 1))
+                    self.addArrangedSubview(seriesButton)
+                }
             }
         }
     }
@@ -45,7 +41,7 @@ final class SeriesHrizStackView: UIStackView {
         var config = UIButton.Configuration.filled()
         var titleAttributes = AttributeContainer()
         titleAttributes.font = UIFont.systemFont(ofSize: 16)
-        config.attributedTitle = AttributedString("N/A", attributes: titleAttributes)
+        config.attributedTitle = AttributedString("0", attributes: titleAttributes)
         config.titleAlignment = .center
         let button = UIButton(configuration: config)
         button.clipsToBounds = true
@@ -76,6 +72,16 @@ final class SeriesHrizStackView: UIStackView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        let subviews = self.arrangedSubviews
+        subviews.forEach { subview in
+            subview.snp.makeConstraints { $0.width.height.equalTo(44) }
+            subview.layer.cornerRadius = subview.frame.height / 2
+        }
+    }
+    
     // MARK: - Update UI
     
     func configure(bookCount: Int) {
@@ -97,8 +103,6 @@ private extension SeriesHrizStackView {
     
     func setConstraints() {
         seriesButton.snp.makeConstraints {
-            $0.leading.greaterThanOrEqualToSuperview().inset(20)
-            $0.trailing.lessThanOrEqualToSuperview().inset(20)
             $0.width.height.equalTo(44)
             $0.centerX.equalToSuperview()
         }
@@ -112,6 +116,9 @@ private extension SeriesHrizStackView {
         config.titleAlignment = .center
         let button = UIButton(configuration: config)
         button.clipsToBounds = true
+        button.addAction(UIAction { _ in
+            self.sendIndexDelegate?.sendIndex(index: (Int(title) ?? 1) - 1)
+        }, for: .touchUpInside)
         
         return button
     }

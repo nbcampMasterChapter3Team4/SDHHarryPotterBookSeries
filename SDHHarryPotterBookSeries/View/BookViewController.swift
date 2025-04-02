@@ -9,17 +9,26 @@ import UIKit
 import Combine
 import SnapKit
 
+protocol SendIndexDelegate: AnyObject {
+    func sendIndex(index: Int)
+}
+
 class BookViewController: UIViewController {
     
     // MARK: - Properties
     
-    // TODO: 아직 완전히 구현 ❌
+    private let currBookIndexKey = "currBookIndex"
     private var currBookIndex = 0 {
         didSet {
             viewModel.changeSelectedBook(to: currBookIndex)
+            saveCurrBookIndex()
         }
     }
     
+    /*
+     UX 고민 2
+     - 마지막으로 본 Book의 Index 저장
+     */
     private let viewModel = BookViewModel(selectedBookIndex: 0)
     private var subscriptions = Set<AnyCancellable>()
     
@@ -40,7 +49,7 @@ class BookViewController: UIViewController {
      - Book 데이터 개수가 늘어났을 때 스크롤하여 볼 수 있도록 스크롤 뷰 생성
      */
     /// Book 시리즈 스크롤 뷰
-    private let seriesHrizScrollView: UIScrollView = {
+    private let seriesScrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.showsVerticalScrollIndicator = false
@@ -55,7 +64,7 @@ class BookViewController: UIViewController {
     private let seriesHrizStackView = SeriesHrizStackView()
     
     /// Book 데이터 스크롤 뷰
-    private let bookVrtcScrollView: UIScrollView = {
+    private let bookScrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.showsVerticalScrollIndicator = false
@@ -83,15 +92,14 @@ class BookViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
+        seriesHrizStackView.sendIndexDelegate = self
         
         setupUI()
         bind()
         // 뷰 모델의 데이터를 바인딩한 후 Book 데이터를 로드해야 오류 발생시 Alert가 정상적으로 표시됨
         viewModel.loadBooks()
-    }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
+        // 마지막으로 본 Book의 Index 불러옴
+        loadCurrBookIndex()
     }
 }
 
@@ -106,14 +114,15 @@ private extension BookViewController {
     func setViewHierarchy() {
         self.view.addSubviews(
             bookTitlelabel,
-            seriesHrizScrollView,
-            bookVrtcScrollView
+            seriesScrollView,
+            bookScrollView
         )
         
-        seriesHrizScrollView.addSubview(seriesScrollContentView)
+        // TODO: - 시리즈 가운데 정렬
+        seriesScrollView.addSubview(seriesScrollContentView)
         seriesScrollContentView.addSubview(seriesHrizStackView)
         
-        bookVrtcScrollView.addSubview(bookScrollContentView)
+        bookScrollView.addSubview(bookScrollContentView)
         bookScrollContentView.addSubviews(
             bookInfoHrizStackView,
             bookDedVrtcStackView,
@@ -128,15 +137,15 @@ private extension BookViewController {
             $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).inset(10)
         }
         
-        seriesHrizScrollView.snp.makeConstraints {
+        seriesScrollView.snp.makeConstraints {
             $0.top.equalTo(bookTitlelabel.snp.bottom).offset(16)
             $0.leading.trailing.equalTo(self.view.safeAreaLayoutGuide)
             $0.height.equalTo(44)
         }
         
         seriesScrollContentView.snp.makeConstraints {
-            $0.edges.equalTo(seriesHrizScrollView.contentLayoutGuide)
-            $0.height.equalTo(seriesHrizScrollView.frameLayoutGuide)
+            $0.edges.equalTo(seriesScrollView.contentLayoutGuide)
+            $0.height.equalTo(seriesScrollView.frameLayoutGuide)
         }
         
         seriesHrizStackView.snp.makeConstraints {
@@ -145,14 +154,14 @@ private extension BookViewController {
             $0.centerX.equalToSuperview()
         }
         
-        bookVrtcScrollView.snp.makeConstraints {
-            $0.top.equalTo(seriesHrizScrollView.snp.bottom).offset(10)
+        bookScrollView.snp.makeConstraints {
+            $0.top.equalTo(seriesScrollView.snp.bottom).offset(10)
             $0.leading.trailing.bottom.equalTo(self.view.safeAreaLayoutGuide)
         }
         
         bookScrollContentView.snp.makeConstraints {
-            $0.edges.equalTo(bookVrtcScrollView.contentLayoutGuide)
-            $0.width.equalTo(bookVrtcScrollView.frameLayoutGuide)
+            $0.edges.equalTo(bookScrollView.contentLayoutGuide)
+            $0.width.equalTo(bookScrollView.frameLayoutGuide)
         }
         
         bookInfoHrizStackView.snp.makeConstraints {
@@ -185,7 +194,11 @@ private extension BookViewController {
             .sink { [weak self] bookCount in
                 guard let self else { return }
                 updateSeriesUI(bookCount: bookCount)
-//                updateSeriesUI(count: 1)
+                
+                // Book 개수 변경 테스트 코드
+//                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+//                    self.updateSeriesUI(bookCount: 3)
+//                }
             }.store(in: &subscriptions)
         
         viewModel.selectedBook
@@ -269,5 +282,23 @@ private extension BookViewController {
         let sheet = UIAlertController(title: "오류", message: message, preferredStyle: .alert)
         sheet.addAction(UIAlertAction(title: "확인", style: .default))
         present(sheet, animated: true)
+    }
+    
+    /// UserDefaults ➡️ currBookIndex 값 로드
+    func loadCurrBookIndex() {
+        currBookIndex = UserDefaults.standard.integer(forKey: currBookIndexKey)
+    }
+    
+    /// UserDefaults ⬅️ currBookIndex 값 저장
+    func saveCurrBookIndex() {
+        UserDefaults.standard.set(currBookIndex, forKey: currBookIndexKey)
+    }
+}
+
+// MARK: - SendIndexDelegate
+
+extension BookViewController: SendIndexDelegate {
+    func sendIndex(index: Int) {
+        currBookIndex = index
     }
 }

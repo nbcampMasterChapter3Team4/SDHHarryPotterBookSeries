@@ -33,10 +33,10 @@ final class BookSumVrtcStackView: UIStackView {
     // MARK: - Properties
     
     /// UserDefaults에서 Summary의 상태가 저장되어있는 Key값
-    private var summaryStateKey = "summaryState"
+    private let summaryStateKey = "summaryState"
     /// 전체 Summary
     private var totalSummary = ""
-    /// 현재 보여지고 있는 Summary
+    /// 현재 보이는 Summary
     private var showingSummary = "" {
         didSet {
             sumLabel.text = showingSummary

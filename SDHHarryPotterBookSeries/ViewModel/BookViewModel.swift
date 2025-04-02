@@ -47,11 +47,12 @@ extension BookViewModel {
             switch result {
             case .success(let books):
                 self.books = books
-                bookCount.send(self.books?.count ?? 0)
+                bookCount.send(self.books?.count ?? 1)
                 selectedBook.send(self.books?[selectedBookIndex])
                 
             case .failure(let error):
                 self.books = nil
+                bookCount.send(0)
                 selectedBook.send(nil)
                 
                 let message: String
@@ -70,7 +71,6 @@ extension BookViewModel {
         }
     }
     
-    // TODO: 아직 완전히 구현 ❌
     /// 시리즈 버튼 눌렀을 때 selectedBook 변경
     func changeSelectedBook(to selectedBookIndex: Int) {
         self.selectedBookIndex = selectedBookIndex
