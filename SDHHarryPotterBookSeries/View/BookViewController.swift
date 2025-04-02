@@ -162,14 +162,14 @@ private extension BookViewController {
         viewModel.selectedBook
             .receive(on: RunLoop.main)
             .sink { [weak self] book in
-                guard let self = self else { return }
+                guard let self else { return }
                 updateUI(with: book)
             }.store(in: &subscriptions)
         
         viewModel.loadBookError
             .receive(on: RunLoop.main)
             .sink { [weak self] errorMsg in
-                guard let self = self else { return }
+                guard let self else { return }
                 showErrorAlert(message: errorMsg)
             }.store(in: &subscriptions)
     }

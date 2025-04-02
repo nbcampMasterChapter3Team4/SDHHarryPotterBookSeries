@@ -8,17 +8,28 @@
 import UIKit
 import SnapKit
 
-enum SummaryState: String {
-    case expanded = "접기"
-    case folded = "더 보기"
-    case none = ""
+enum SummaryState: Int, CaseIterable {
+    case none
+    case expanded
+    case folded
+    
+    var buttonTitle: String {
+        switch self {
+        case .none:
+            return ""
+        case .expanded:
+            return "접기"
+        case .folded:
+            return "더 보기"
+        }
+    }
 }
 
 final class BookSumVrtcStackView: UIStackView {
     
     // MARK: - Properties
     
-    // TODO: UserDefaults에 더 보기/접기 상태 저장
+    private var userDefaultsKey = "summaryState"
     private var totalSummary = ""
     private var showingSummary = "" {
         didSet {
@@ -46,6 +57,25 @@ final class BookSumVrtcStackView: UIStackView {
         return label
     }()
     
+    private var summaryState: SummaryState = .none {
+        didSet {
+            if summaryState == .expanded {
+                showingSummary = totalSummary
+                changeSeeMoreButtonTitle(to: summaryState.buttonTitle)
+                seeMoreHrizStack.isHidden = false
+                
+            } else if summaryState == .folded {
+                showingSummary = String(totalSummary.prefix(450) + "...")
+                changeSeeMoreButtonTitle(to: summaryState.buttonTitle)
+                seeMoreHrizStack.isHidden = false
+                
+            } else {
+                seeMoreHrizStack.isHidden = true
+            }
+            saveSeeMoreButtonState()
+        }
+    }
+    
     private let seeMoreHrizStack: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
@@ -55,22 +85,6 @@ final class BookSumVrtcStackView: UIStackView {
     }()
     
     private let seeMoreHrizSpacer = UIView.spacer(axis: .horizontal)
-    
-    private var seeMoreButtonTitle: SummaryState = .none {
-        didSet {
-            if seeMoreButtonTitle != .none {
-                var config = seeMoreButton.configuration
-                var titleAttributes = AttributeContainer()
-                titleAttributes.font = UIFont.systemFont(ofSize: 14, weight: .bold)
-                config?.attributedTitle = AttributedString(seeMoreButtonTitle.rawValue, attributes: titleAttributes)
-                seeMoreButton.configuration = config
-                
-                seeMoreHrizStack.isHidden = false
-            } else {
-                seeMoreHrizStack.isHidden = true
-            }
-        }
-    }
     
     private let seeMoreButton: UIButton = {
         var config = UIButton.Configuration.plain()
@@ -101,13 +115,11 @@ final class BookSumVrtcStackView: UIStackView {
         totalSummary = summary
         
         if summary.count >= 450 {
-            showingSummary = String(summary.prefix(450) + "...")
-            seeMoreButtonTitle = .folded
-        } else {
-            showingSummary = summary
-            seeMoreButtonTitle = .none
+            loadSeeMoreButtonState()
+            if summaryState == .none {
+                summaryState = .folded
+            }
         }
-        sumLabel.text = showingSummary
     }
 }
 
@@ -142,16 +154,40 @@ private extension BookSumVrtcStackView {
     
     func setButtonAction() {
         let action = UIAction { [weak self] _ in
-            guard let self = self else { return }
+            guard let self else { return }
             
-            if seeMoreButtonTitle == .folded {
+            if summaryState == .folded {
+                // 접기 ➡️ 더 보기
                 showingSummary = totalSummary
-                seeMoreButtonTitle = .expanded
-            } else if seeMoreButtonTitle == .expanded {
+                summaryState = .expanded
+            } else if summaryState == .expanded {
+                // 더 보기 ➡️ 접기
                 showingSummary = String(totalSummary.prefix(450) + "...")
-                seeMoreButtonTitle = .folded
+                summaryState = .folded
             }
+            saveSeeMoreButtonState()
         }
         seeMoreButton.addAction(action, for: .touchUpInside)
+    }
+    
+    func changeSeeMoreButtonTitle(to title: String) {
+        var config = seeMoreButton.configuration
+        var titleAttributes = AttributeContainer()
+        titleAttributes.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+        config?.attributedTitle = AttributedString(title, attributes: titleAttributes)
+        seeMoreButton.configuration = config
+    }
+}
+
+// MARK: - Private Methods
+
+extension BookSumVrtcStackView {
+    func loadSeeMoreButtonState() {
+        let value = UserDefaults.standard.integer(forKey: userDefaultsKey)
+        summaryState = SummaryState.allCases[value]
+    }
+    
+    func saveSeeMoreButtonState() {
+        UserDefaults.standard.set(summaryState.rawValue, forKey: userDefaultsKey)
     }
 }
