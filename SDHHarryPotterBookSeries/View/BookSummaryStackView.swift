@@ -33,13 +33,12 @@ final class BookSummaryStackView: UIStackView {
     // MARK: - Properties
     
     /// UserDefaults에서 Summary의 상태가 저장되어있는 Key값의 베이스
-    private var summaryStateBaseKey = "summaryState"
+    private let summaryStateBaseKey = "summaryState"
     /// 현재 Book Index
-    var currBookIndex = 0
-    /// "summaryStateBaseKey" + currBookIndex = 현재 Book Index의 summaryState Key값
+    var selectedBookIndex = 0
+    /// "summaryStateBaseKey" + selectedBookIndex = 현재 Book Index의 summaryState Key값
     private var currSummaryStateKey = ""
     
-    // TODO: 데이터 로드 실패시 N/A 적용 안되는 현상 수정
     /// 전체 Summary
     private var totalSummary = ""
     /// 현재 보이는 Summary
@@ -68,7 +67,6 @@ final class BookSummaryStackView: UIStackView {
         
         return label
     }()
-    
     
     private var summaryState: SummaryState = .none {
         didSet {
@@ -203,7 +201,7 @@ private extension BookSummaryStackView {
 extension BookSummaryStackView {
     /// UserDefaults ➡️ summaryState 값 로드(rawValue)
     func loadSummaryState() {
-        currSummaryStateKey = summaryStateBaseKey + String(currBookIndex)
+        currSummaryStateKey = summaryStateBaseKey + String(selectedBookIndex)
         let value = UserDefaults.standard.integer(forKey: currSummaryStateKey)
         summaryState = SummaryState.allCases[value]
     }

@@ -17,7 +17,12 @@ final class BookInfoStackView: UIStackView {
     
     let bookImageView: UIImageView = {
         var imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit
+        /*
+         bookImageView 비율에 맞지 않는 이미지가 들어오더라도
+         레이아웃이 비어보이지 않도록 scaleAspectFill로 설정
+        */
+        imageView.contentMode = .scaleAspectFill
+        imageView.backgroundColor = .placeholderText
         
         return imageView
     }()

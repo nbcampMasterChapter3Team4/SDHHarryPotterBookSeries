@@ -36,7 +36,11 @@ final class SeriesStackView: UIStackView {
     
     // MARK: - UI Components
     
-    /// Book 시리즈 버튼
+    /*
+     예외 처리 2
+     - 데이터 로드 실패 시 미동작 버튼 보임
+     */
+    /// Book 시리즈 버튼(Book 데이터 로드 실패시 보임)
     private let seriesButton: UIButton = {
         var config = UIButton.Configuration.filled()
         

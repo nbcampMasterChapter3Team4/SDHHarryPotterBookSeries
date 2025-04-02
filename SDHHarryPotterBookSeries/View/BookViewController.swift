@@ -21,16 +21,16 @@ class BookViewController: UIViewController {
      UX 고민 2
      - 마지막으로 본 Book의 Index 저장
      */
-    private let currBookIndexKey = "currBookIndex"
-    private var currBookIndex = 0 {
+    private let selectedBookIndexKey = "selectedBookIndex"
+    private var selectedBookIndex = 0 {
         didSet {
-            viewModel.changeSelectedBook(to: currBookIndex)
-            bookSummaryStackView.currBookIndex = currBookIndex
-            saveCurrBookIndex()
+            viewModel.selectedBookIndex = selectedBookIndex
+            bookSummaryStackView.selectedBookIndex = selectedBookIndex
+            saveSelectedBookIndex()
         }
     }
     
-    private let viewModel = BookViewModel(selectedBookIndex: 0)
+    private let viewModel = BookViewModel()
     private var subscriptions = Set<AnyCancellable>()
     
     // MARK: - UI Components
@@ -100,7 +100,7 @@ class BookViewController: UIViewController {
         // 뷰 모델의 데이터를 바인딩한 후 Book 데이터를 로드해야 오류 발생시 Alert가 정상적으로 표시됨
         viewModel.loadBooks()
         // 마지막으로 본 Book의 Index 불러옴
-        loadCurrBookIndex()
+        loadSelectedBookIndex()
     }
 }
 
@@ -195,11 +195,6 @@ private extension BookViewController {
             .sink { [weak self] bookCount in
                 guard let self else { return }
                 updateSeriesUI(bookCount: bookCount)
-                
-                // Book 개수 변경 테스트 코드
-//                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-//                    self.updateSeriesUI(bookCount: 3)
-//                }
             }.store(in: &subscriptions)
         
         viewModel.selectedBook
@@ -246,7 +241,7 @@ private extension BookViewController {
         } else {
             /*
              예외 처리 1
-             - 데이터 없을 때 기본값 표시
+             - 데이터 로드 실패시 기본값 표시
              */
             let defaultValue = "N/A"
             let defaultChapter = Chapter(title: defaultValue)
@@ -283,14 +278,14 @@ private extension BookViewController {
         present(sheet, animated: true)
     }
     
-    /// UserDefaults ➡️ currBookIndex 값 로드
-    func loadCurrBookIndex() {
-        currBookIndex = UserDefaults.standard.integer(forKey: currBookIndexKey)
+    /// UserDefaults ➡️ selectedBookIndex 값 로드
+    func loadSelectedBookIndex() {
+        selectedBookIndex = UserDefaults.standard.integer(forKey: selectedBookIndexKey)
     }
     
-    /// UserDefaults ⬅️ currBookIndex 값 저장
-    func saveCurrBookIndex() {
-        UserDefaults.standard.set(currBookIndex, forKey: currBookIndexKey)
+    /// UserDefaults ⬅️ selectedBookIndex 값 저장
+    func saveSelectedBookIndex() {
+        UserDefaults.standard.set(selectedBookIndex, forKey: selectedBookIndexKey)
     }
 }
 
@@ -298,6 +293,6 @@ private extension BookViewController {
 
 extension BookViewController: SendIndexDelegate {
     func sendIndex(index: Int) {
-        currBookIndex = index
+        selectedBookIndex = index
     }
 }
