@@ -9,6 +9,7 @@ import UIKit
 import Combine
 import SnapKit
 
+/// SeriesStackView에서 BookViewController로 Index를 보내기 위한 Delegate
 protocol SendIndexDelegate: AnyObject {
     func sendIndex(index: Int)
 }

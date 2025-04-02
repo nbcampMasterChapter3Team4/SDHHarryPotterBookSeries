@@ -52,7 +52,7 @@ final class SeriesStackView: UIStackView {
         if bookCount > 0 {
             removeSeriesButtons()
             
-            // arrangedSubView로 챕터 추가
+            // arrangedSubView로 시리즈 버튼 추가
             for index in 0..<bookCount {
                 let seriesButton = makeSeriesButton(title: String(index + 1))
                 if seriesButton.tag - 1 == selectedBookIndex {
@@ -64,7 +64,7 @@ final class SeriesStackView: UIStackView {
         } else {
             /*
              예외 처리 2
-             - 데이터 로드 실패 시 미동작 버튼 보임
+             - 데이터 로드 실패 시 dummy 시리즈 버튼 추가
              */
             removeSeriesButtons()
             
