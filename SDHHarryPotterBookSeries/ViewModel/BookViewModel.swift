@@ -28,8 +28,9 @@ final class BookViewModel {
     var selectedBook = CurrentValueSubject<Book?, Never>(nil)
     var loadBookError = PassthroughSubject<String, Never>()
     
+    /// 책 사진
     var image: UIImage? {
-        return BookImage.allCases[selectedBookIndex].image
+        return BookImageName.allCases[selectedBookIndex].image
     }
 }
 

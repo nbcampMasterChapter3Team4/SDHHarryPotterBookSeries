@@ -7,13 +7,13 @@
 
 import Foundation
 
-// DateFormatter 호출 비용 절감 코드
 extension DateFormatter {
     static let dateFormatter : DateFormatter = {
         let formatter = DateFormatter()
         return formatter
     }()
     
+    /// DateFormatter 호출 비용 절감 코드
     static func getDateFormatter() -> DateFormatter {
         return dateFormatter
     }

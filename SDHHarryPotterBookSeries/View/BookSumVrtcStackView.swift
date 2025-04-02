@@ -8,11 +8,14 @@
 import UIKit
 import SnapKit
 
+
+/// Summary의 상태를 나타내는 enum
 enum SummaryState: Int, CaseIterable {
     case none
     case expanded
     case folded
     
+    /// Summary의 상태에 따라 title을 반환함
     var buttonTitle: String {
         switch self {
         case .none:
@@ -29,8 +32,11 @@ final class BookSumVrtcStackView: UIStackView {
     
     // MARK: - Properties
     
-    private var userDefaultsKey = "summaryState"
+    /// Summary의 상태가 저장되어있는 UserDefaults의 Key값
+    private var summaryStateKey = "summaryState"
+    /// 전체 Summary
     private var totalSummary = ""
+    /// 현재 보여지고 있는 Summary
     private var showingSummary = "" {
         didSet {
             sumLabel.text = showingSummary
@@ -57,22 +63,27 @@ final class BookSumVrtcStackView: UIStackView {
         return label
     }()
     
+    
     private var summaryState: SummaryState = .none {
         didSet {
             if summaryState == .expanded {
+                // 요약 텍스트 전체 표시
                 showingSummary = totalSummary
                 changeSeeMoreButtonTitle(to: summaryState.buttonTitle)
                 seeMoreHrizStack.isHidden = false
                 
             } else if summaryState == .folded {
+                // 요약 텍스트 일부(450자 + "...") 표시
                 showingSummary = String(totalSummary.prefix(450) + "...")
                 changeSeeMoreButtonTitle(to: summaryState.buttonTitle)
                 seeMoreHrizStack.isHidden = false
                 
             } else {
+                // 450자 미만 => 요약 텍스트 전체 표시 및 더 보기 버튼 숨김
+                showingSummary = totalSummary
                 seeMoreHrizStack.isHidden = true
             }
-            saveSeeMoreButtonState()
+            saveSummaryState()
         }
     }
     
@@ -84,6 +95,7 @@ final class BookSumVrtcStackView: UIStackView {
         return stackView
     }()
     
+    /// seeMoreButton이 맨 오른쪽에 위치하도록 하는 Spacer
     private let seeMoreHrizSpacer = UIView.spacer(axis: .horizontal)
     
     private let seeMoreButton: UIButton = {
@@ -115,8 +127,8 @@ final class BookSumVrtcStackView: UIStackView {
         totalSummary = summary
         
         if summary.count >= 450 {
-            loadSeeMoreButtonState()
-            if summaryState == .none {
+            loadSummaryState()
+            if summaryState == .none {  // 초기 상태
                 summaryState = .folded
             }
         }
@@ -165,7 +177,6 @@ private extension BookSumVrtcStackView {
                 showingSummary = String(totalSummary.prefix(450) + "...")
                 summaryState = .folded
             }
-            saveSeeMoreButtonState()
         }
         seeMoreButton.addAction(action, for: .touchUpInside)
     }
@@ -182,12 +193,14 @@ private extension BookSumVrtcStackView {
 // MARK: - Private Methods
 
 extension BookSumVrtcStackView {
-    func loadSeeMoreButtonState() {
-        let value = UserDefaults.standard.integer(forKey: userDefaultsKey)
+    /// UserDefaults로부터 summaryState 값 로드(rawValue)
+    func loadSummaryState() {
+        let value = UserDefaults.standard.integer(forKey: summaryStateKey)
         summaryState = SummaryState.allCases[value]
     }
     
-    func saveSeeMoreButtonState() {
-        UserDefaults.standard.set(summaryState.rawValue, forKey: userDefaultsKey)
+    /// UserDefaults에 summaryState 값 저장(rawValue)
+    func saveSummaryState() {
+        UserDefaults.standard.set(summaryState.rawValue, forKey: summaryStateKey)
     }
 }

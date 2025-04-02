@@ -12,6 +12,7 @@ final class BookInfoHrizStackView: UIStackView {
     
     // MARK: - UI Components
     
+    /// BookInfoHrizStackView가 왼쪽 간격을 갖도록 하는 Spacer
     private let bookInfoHrizSpacer = UIView.spacer(axis: .horizontal)
     
     let bookImageView: UIImageView = {
@@ -114,6 +115,7 @@ final class BookInfoHrizStackView: UIStackView {
         return label
     }()
     
+    /// textInfoVrtcStackView가 아래 간격을 갖도록 하는 Spacer
     private let textInfoVrtcSpacer = UIView.spacer(axis: .vertical)
     
     // MARK: - Initializer
