@@ -32,9 +32,13 @@ final class BookSummaryStackView: UIStackView {
     
     // MARK: - Properties
     
-    // TODO: 시리즈별로 Summary의 상태 따로 저장
-    /// UserDefaults에서 Summary의 상태가 저장되어있는 Key값
-    private let summaryStateKey = "summaryState"
+    /// UserDefaults에서 Summary의 상태가 저장되어있는 Key값의 베이스
+    private var summaryStateBaseKey = "summaryState"
+    /// 현재 Book Index
+    var currBookIndex = 0
+    /// "summaryStateBaseKey" + currBookIndex = 현재 Book Index의 summaryState Key값
+    private var currSummaryStateKey = ""
+    
     // TODO: 데이터 로드 실패시 N/A 적용 안되는 현상 수정
     /// 전체 Summary
     private var totalSummary = ""
@@ -128,11 +132,13 @@ final class BookSummaryStackView: UIStackView {
     func configure(summary: String) {
         totalSummary = summary
         
-        if summary.count >= 450 {
+        if totalSummary.count >= 450 {
             loadSummaryState()
             if summaryState == .none {  // 초기 상태
                 summaryState = .folded
             }
+        } else {
+            summaryState = .none
         }
     }
 }
@@ -170,19 +176,7 @@ private extension BookSummaryStackView {
         seeMoreButton.addTarget(self, action: #selector(seeMoreButtonTarget), for: .touchUpInside)
     }
     
-    func changeSeeMoreButtonTitle(to title: String) {
-        var config = seeMoreButton.configuration
-        var titleAttributes = AttributeContainer()
-        titleAttributes.font = UIFont.systemFont(ofSize: 14, weight: .bold)
-        config?.attributedTitle = AttributedString(title, attributes: titleAttributes)
-        seeMoreButton.configuration = config
-    }
-}
-
-// MARK: - Private Methods
-
-extension BookSummaryStackView {
-    /// seeMoreButton touchUpInside시 호출
+    /// summaryState에 따라 보여지는 Summary 변경
     @objc func seeMoreButtonTarget() {
         if summaryState == .folded {
             // 접기 ➡️ 더 보기
@@ -195,14 +189,27 @@ extension BookSummaryStackView {
         }
     }
     
+    func changeSeeMoreButtonTitle(to title: String) {
+        var config = seeMoreButton.configuration
+        var titleAttributes = AttributeContainer()
+        titleAttributes.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+        config?.attributedTitle = AttributedString(title, attributes: titleAttributes)
+        seeMoreButton.configuration = config
+    }
+}
+
+// MARK: - Private Methods
+
+extension BookSummaryStackView {
     /// UserDefaults ➡️ summaryState 값 로드(rawValue)
     func loadSummaryState() {
-        let value = UserDefaults.standard.integer(forKey: summaryStateKey)
+        currSummaryStateKey = summaryStateBaseKey + String(currBookIndex)
+        let value = UserDefaults.standard.integer(forKey: currSummaryStateKey)
         summaryState = SummaryState.allCases[value]
     }
     
     /// UserDefaults ⬅️ summaryState 값 저장(rawValue)
     func saveSummaryState() {
-        UserDefaults.standard.set(summaryState.rawValue, forKey: summaryStateKey)
+        UserDefaults.standard.set(summaryState.rawValue, forKey: currSummaryStateKey)
     }
 }

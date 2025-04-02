@@ -11,8 +11,8 @@ class DataService {
     
     func loadBooks(completion: @escaping (Result<[Book], Error>) -> Void) {
 //        guard let path = Bundle.main.path(forResource: "data_parsingErrorTest", ofType: "json") else {
-//        guard let path = Bundle.main.path(forResource: "data_fileNotFound", ofType: "json") else {
-        guard let path = Bundle.main.path(forResource: "data", ofType: "json") else {
+        guard let path = Bundle.main.path(forResource: "data_fileNotFound", ofType: "json") else {
+//        guard let path = Bundle.main.path(forResource: "data", ofType: "json") else {
             os_log("🚨 JSON 파일을 찾을 수 없음", log: self.log, type: .error)
             completion(.failure(DataError.fileNotFound))
             return

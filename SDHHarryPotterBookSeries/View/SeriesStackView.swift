@@ -128,12 +128,9 @@ private extension SeriesStackView {
         
         return button
     }
-}
-
-// MARK: - Private Methods
-
-private extension SeriesStackView {
+    
+    /// UIButton의 tag(=title) - 1을 보냄
     @objc func seriesButtonTarget(sender: UIButton) {
-        sendIndexDelegate?.sendIndex(index: Int(sender.tag) - 1)
+        sendIndexDelegate?.sendIndex(index: sender.tag - 1)
     }
 }

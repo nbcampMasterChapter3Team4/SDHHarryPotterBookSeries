@@ -25,6 +25,7 @@ class BookViewController: UIViewController {
     private var currBookIndex = 0 {
         didSet {
             viewModel.changeSelectedBook(to: currBookIndex)
+            bookSummaryStackView.currBookIndex = currBookIndex
             saveCurrBookIndex()
         }
     }
@@ -91,7 +92,7 @@ class BookViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .white
         seriesStackView.sendIndexDelegate = self
         
         setupUI()
