@@ -1,5 +1,5 @@
 //
-//  BookSumVrtcStackView.swift
+//  BookSummaryStackView.swift
 //  SDHHarryPotterBookSeries
 //
 //  Created by 서동환 on 3/31/25.
@@ -28,12 +28,14 @@ enum SummaryState: Int, CaseIterable {
     }
 }
 
-final class BookSumVrtcStackView: UIStackView {
+final class BookSummaryStackView: UIStackView {
     
     // MARK: - Properties
     
+    // TODO: 시리즈별로 Summary의 상태 따로 저장
     /// UserDefaults에서 Summary의 상태가 저장되어있는 Key값
     private let summaryStateKey = "summaryState"
+    // TODO: 데이터 로드 실패시 N/A 적용 안되는 현상 수정
     /// 전체 Summary
     private var totalSummary = ""
     /// 현재 보이는 Summary
@@ -137,7 +139,7 @@ final class BookSumVrtcStackView: UIStackView {
 
 // MARK: - UI Methods
 
-private extension BookSumVrtcStackView {
+private extension BookSummaryStackView {
     func setupUI() {
         setViewHierarchy()
         setConstraints()
@@ -165,20 +167,7 @@ private extension BookSumVrtcStackView {
     }
     
     func setButtonAction() {
-        let action = UIAction { [weak self] _ in
-            guard let self else { return }
-            
-            if summaryState == .folded {
-                // 접기 ➡️ 더 보기
-                showingSummary = totalSummary
-                summaryState = .expanded
-            } else if summaryState == .expanded {
-                // 더 보기 ➡️ 접기
-                showingSummary = String(totalSummary.prefix(450) + "...")
-                summaryState = .folded
-            }
-        }
-        seeMoreButton.addAction(action, for: .touchUpInside)
+        seeMoreButton.addTarget(self, action: #selector(seeMoreButtonTarget), for: .touchUpInside)
     }
     
     func changeSeeMoreButtonTitle(to title: String) {
@@ -192,7 +181,20 @@ private extension BookSumVrtcStackView {
 
 // MARK: - Private Methods
 
-extension BookSumVrtcStackView {
+extension BookSummaryStackView {
+    /// seeMoreButton touchUpInside시 호출
+    @objc func seeMoreButtonTarget() {
+        if summaryState == .folded {
+            // 접기 ➡️ 더 보기
+            showingSummary = totalSummary
+            summaryState = .expanded
+        } else if summaryState == .expanded {
+            // 더 보기 ➡️ 접기
+            showingSummary = String(totalSummary.prefix(450) + "...")
+            summaryState = .folded
+        }
+    }
+    
     /// UserDefaults ➡️ summaryState 값 로드(rawValue)
     func loadSummaryState() {
         let value = UserDefaults.standard.integer(forKey: summaryStateKey)

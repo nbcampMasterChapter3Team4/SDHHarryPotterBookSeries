@@ -17,6 +17,10 @@ class BookViewController: UIViewController {
     
     // MARK: - Properties
     
+    /*
+     UX 고민 2
+     - 마지막으로 본 Book의 Index 저장
+     */
     private let currBookIndexKey = "currBookIndex"
     private var currBookIndex = 0 {
         didSet {
@@ -25,10 +29,6 @@ class BookViewController: UIViewController {
         }
     }
     
-    /*
-     UX 고민 2
-     - 마지막으로 본 Book의 Index 저장
-     */
     private let viewModel = BookViewModel(selectedBookIndex: 0)
     private var subscriptions = Set<AnyCancellable>()
     
@@ -61,7 +61,7 @@ class BookViewController: UIViewController {
     private let seriesScrollContentView = UIView()
     
     /// Book 시리즈 영역
-    private let seriesHrizStackView = SeriesHrizStackView()
+    private let seriesStackView = SeriesStackView()
     
     /// Book 데이터 스크롤 뷰
     private let bookScrollView: UIScrollView = {
@@ -76,23 +76,23 @@ class BookViewController: UIViewController {
     private let bookScrollContentView = UIView()
     
     /// Book 정보 영역
-    private let bookInfoHrizStackView = BookInfoHrizStackView()
+    private let bookInfoStackView = BookInfoStackView()
     
     /// Dedication 영역
-    private let bookDedVrtcStackView = BookDedVrtcStackView()
+    private let bookDedicationStackView = BookDedicationStackView()
     
     /// Summary 영역
-    private let bookSumVrtcStackView = BookSumVrtcStackView()
+    private let bookSummaryStackView = BookSummaryStackView()
     
     /// Chapter 영역
-    private let bookChapterVrtcStackView = BookChapterVrtcStackView()
+    private let bookChapterStackView = BookChapterStackView()
     
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-        seriesHrizStackView.sendIndexDelegate = self
+        seriesStackView.sendIndexDelegate = self
         
         setupUI()
         bind()
@@ -120,14 +120,14 @@ private extension BookViewController {
         
         // TODO: - 시리즈 가운데 정렬
         seriesScrollView.addSubview(seriesScrollContentView)
-        seriesScrollContentView.addSubview(seriesHrizStackView)
+        seriesScrollContentView.addSubview(seriesStackView)
         
         bookScrollView.addSubview(bookScrollContentView)
         bookScrollContentView.addSubviews(
-            bookInfoHrizStackView,
-            bookDedVrtcStackView,
-            bookSumVrtcStackView,
-            bookChapterVrtcStackView
+            bookInfoStackView,
+            bookDedicationStackView,
+            bookSummaryStackView,
+            bookChapterStackView
         )
     }
     
@@ -148,7 +148,7 @@ private extension BookViewController {
             $0.height.equalTo(seriesScrollView.frameLayoutGuide)
         }
         
-        seriesHrizStackView.snp.makeConstraints {
+        seriesStackView.snp.makeConstraints {
             $0.leading.greaterThanOrEqualToSuperview().inset(20)
             $0.trailing.lessThanOrEqualToSuperview().inset(20)
             $0.centerX.equalToSuperview()
@@ -164,24 +164,24 @@ private extension BookViewController {
             $0.width.equalTo(bookScrollView.frameLayoutGuide)
         }
         
-        bookInfoHrizStackView.snp.makeConstraints {
+        bookInfoStackView.snp.makeConstraints {
             $0.leading.trailing.equalTo(self.view.safeAreaLayoutGuide).inset(5)
             $0.top.equalToSuperview().inset(32)
             $0.height.equalTo(150)
         }
         
-        bookDedVrtcStackView.snp.makeConstraints {
-            $0.top.equalTo(bookInfoHrizStackView.snp.bottom).offset(24)
+        bookDedicationStackView.snp.makeConstraints {
+            $0.top.equalTo(bookInfoStackView.snp.bottom).offset(24)
             $0.leading.trailing.equalToSuperview().inset(20)
         }
         
-        bookSumVrtcStackView.snp.makeConstraints {
-            $0.top.equalTo(bookDedVrtcStackView.snp.bottom).offset(24)
+        bookSummaryStackView.snp.makeConstraints {
+            $0.top.equalTo(bookDedicationStackView.snp.bottom).offset(24)
             $0.leading.trailing.equalToSuperview().inset(20)
         }
         
-        bookChapterVrtcStackView.snp.makeConstraints {
-            $0.top.equalTo(bookSumVrtcStackView.snp.bottom).offset(24)
+        bookChapterStackView.snp.makeConstraints {
+            $0.top.equalTo(bookSummaryStackView.snp.bottom).offset(24)
             $0.leading.trailing.equalToSuperview().inset(20)
             $0.bottom.equalToSuperview()
         }
@@ -217,18 +217,17 @@ private extension BookViewController {
     }
     
     func updateSeriesUI(bookCount: Int) {
-        seriesHrizStackView.configure(bookCount: bookCount)
+        seriesStackView.configure(bookCount: bookCount)
     }
     
     func updateDataUI(with book: Book?) {
         if let book = book?.attributes {
             // Level 1
             bookTitlelabel.text = book.title
-//            seriesButton.configuration?.title = String(1)
             
             // Level 2
             let convertedDate = book.releaseDate.toDate()?.toString()
-            bookInfoHrizStackView.configure(
+            bookInfoStackView.configure(
                 image: viewModel.image,
                 title: book.title,
                 author: book.author,
@@ -237,11 +236,11 @@ private extension BookViewController {
             )
             
             // Level 3
-            bookDedVrtcStackView.configure(dedication: book.dedication)
-            bookSumVrtcStackView.configure(summary: book.summary)
+            bookDedicationStackView.configure(dedication: book.dedication)
+            bookSummaryStackView.configure(summary: book.summary)
             
             // Level 4
-            bookChapterVrtcStackView.configure(chapters: book.chapters)
+            bookChapterStackView.configure(chapters: book.chapters)
             
         } else {
             /*
@@ -253,10 +252,9 @@ private extension BookViewController {
             
             // Level 1
             bookTitlelabel.text = defaultValue
-//            seriesButton.configuration?.title = String(1)
             
             // Level 2
-            bookInfoHrizStackView.configure(
+            bookInfoStackView.configure(
                 image: nil,
                 title: defaultValue,
                 author: defaultValue,
@@ -265,11 +263,11 @@ private extension BookViewController {
             )
             
             // Level 3
-            bookDedVrtcStackView.configure(dedication: defaultValue)
-            bookSumVrtcStackView.configure(summary: defaultValue)
+            bookDedicationStackView.configure(dedication: defaultValue)
+            bookSummaryStackView.configure(summary: defaultValue)
             
             // Level 4
-            bookChapterVrtcStackView.configure(chapters: [defaultChapter])
+            bookChapterStackView.configure(chapters: [defaultChapter])
         }
     }
 }

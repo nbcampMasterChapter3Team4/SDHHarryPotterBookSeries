@@ -1,5 +1,5 @@
 //
-//  SeriesHrizStackView.swift
+//  SeriesStackView.swift
 //  SDHHarryPotterBookSeries
 //
 //  Created by 서동환 on 4/2/25.
@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-final class SeriesHrizStackView: UIStackView {
+final class SeriesStackView: UIStackView {
     
     // MARK: - Properties
     
@@ -39,10 +39,13 @@ final class SeriesHrizStackView: UIStackView {
     /// Book 시리즈 버튼
     private let seriesButton: UIButton = {
         var config = UIButton.Configuration.filled()
+        
         var titleAttributes = AttributeContainer()
         titleAttributes.font = UIFont.systemFont(ofSize: 16)
         config.attributedTitle = AttributedString("0", attributes: titleAttributes)
+        
         config.titleAlignment = .center
+        
         let button = UIButton(configuration: config)
         button.clipsToBounds = true
         
@@ -91,7 +94,7 @@ final class SeriesHrizStackView: UIStackView {
 
 // MARK: - UI Methods
 
-private extension SeriesHrizStackView {
+private extension SeriesStackView {
     func setupUI() {
         setViewHierarchy()
         setConstraints()
@@ -110,16 +113,27 @@ private extension SeriesHrizStackView {
     
     func makeSeriesButton(title: String) -> UIButton {
         var config = UIButton.Configuration.filled()
+        
         var titleAttributes = AttributeContainer()
         titleAttributes.font = UIFont.systemFont(ofSize: 16)
         config.attributedTitle = AttributedString(title, attributes: titleAttributes)
+        
         config.titleAlignment = .center
+        
         let button = UIButton(configuration: config)
         button.clipsToBounds = true
-        button.addAction(UIAction { _ in
-            self.sendIndexDelegate?.sendIndex(index: (Int(title) ?? 1) - 1)
-        }, for: .touchUpInside)
+        
+        button.tag = Int(title) ?? 0
+        button.addTarget(self, action: #selector(seriesButtonTarget), for: .touchUpInside)
         
         return button
+    }
+}
+
+// MARK: - Private Methods
+
+private extension SeriesStackView {
+    @objc func seriesButtonTarget(sender: UIButton) {
+        sendIndexDelegate?.sendIndex(index: Int(sender.tag) - 1)
     }
 }

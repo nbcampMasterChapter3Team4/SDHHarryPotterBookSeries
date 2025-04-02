@@ -1,5 +1,5 @@
 //
-//  BookChapterVrtcStackView.swift
+//  BookChapterStackView.swift
 //  SDHHarryPotterBookSeries
 //
 //  Created by 서동환 on 4/1/25.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class BookChapterVrtcStackView: UIStackView {
+final class BookChapterStackView: UIStackView {
     
     // MARK: - UI Components
         
@@ -58,7 +58,7 @@ final class BookChapterVrtcStackView: UIStackView {
 
 // MARK: - UI Methods
 
-private extension BookChapterVrtcStackView {
+private extension BookChapterStackView {
     func setupUI() {
         setViewHierarchy()
     }

@@ -1,5 +1,5 @@
 //
-//  BookInfoHrizStackView.swift
+//  BookInfoStackView.swift
 //  SDHHarryPotterBookSeries
 //
 //  Created by 서동환 on 3/28/25.
@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-final class BookInfoHrizStackView: UIStackView {
+final class BookInfoStackView: UIStackView {
     
     // MARK: - UI Components
     
@@ -152,7 +152,7 @@ final class BookInfoHrizStackView: UIStackView {
 
 // MARK: - UI Methods
 
-private extension BookInfoHrizStackView {
+private extension BookInfoStackView {
     func setupUI() {
         setViewHierarchy()
         setConstraints()
