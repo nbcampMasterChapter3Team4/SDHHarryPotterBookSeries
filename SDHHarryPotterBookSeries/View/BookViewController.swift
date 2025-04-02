@@ -13,13 +13,20 @@ class BookViewController: UIViewController {
     
     // MARK: - Properties
     
-    private var currBookIndex = 0
+   
+    
+    private var currBookIndex = 0 {
+        didSet {
+            viewModel.changeSelectedBook(to: currBookIndex)
+        }
+    }
+    
     private let viewModel = BookViewModel(selectedBookIndex: 0)
     private var subscriptions = Set<AnyCancellable>()
     
     // MARK: - UI Components
     
-    /// 책 제목 라벨
+    /// Book 제목 라벨
     private let bookTitlelabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 24, weight: .bold)
@@ -29,21 +36,12 @@ class BookViewController: UIViewController {
         return label
     }()
     
-    /// 책 시리즈 버튼
-    private let seriesButton: UIButton = {
-        var config = UIButton.Configuration.filled()
-        var titleAttr = AttributedString.init("1")
-        titleAttr.font = .system(size: 16)
-        config.attributedTitle = titleAttr
-        config.titleAlignment = .center
-        let button = UIButton(configuration: config)
-        button.clipsToBounds = true
-        
-        return button
-    }()
-    
-    /// 책 데이터 스크롤 뷰
-    private let bookScrollView: UIScrollView = {
+    /*
+     UX 고민 1
+     - Book 데이터 개수가 늘어났을 때 스크롤하여 볼 수 있도록 스크롤 뷰 생성
+     */
+    /// Book 시리즈 스크롤 뷰
+    private let bookSeriesHrizScrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.showsVerticalScrollIndicator = false
@@ -51,10 +49,25 @@ class BookViewController: UIViewController {
         return scrollView
     }()
     
-    /// 책 데이터 스크롤 뷰의 컨텐츠 뷰
+    /// Book 시리즈 스크롤 뷰의 컨텐츠 뷰
+    private let bookSeriesScrollContentView = UIView()
+    
+    /// Book 시리즈 영역
+    private let bookSeriesHrizStackView = BookSeriesHrizStackView()
+    
+    /// Book 데이터 스크롤 뷰
+    private let bookVrtcScrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.showsHorizontalScrollIndicator = false
+        scrollView.showsVerticalScrollIndicator = false
+        
+        return scrollView
+    }()
+    
+    /// Book 데이터 스크롤 뷰의 컨텐츠 뷰
     private let bookScrollContentView = UIView()
     
-    /// 책 정보 영역
+    /// Book 정보 영역
     private let bookInfoHrizStackView = BookInfoHrizStackView()
     
     /// Dedication 영역
@@ -74,13 +87,12 @@ class BookViewController: UIViewController {
         
         setupUI()
         bind()
-        // 뷰 모델의 데이터를 바인딩한 후 책 데이터를 로드해야 오류 발생시 Alert가 정상적으로 표시됨
+        // 뷰 모델의 데이터를 바인딩한 후 Book 데이터를 로드해야 오류 발생시 Alert가 정상적으로 표시됨
         viewModel.loadBooks()
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        seriesButton.layer.cornerRadius = seriesButton.frame.height / 2
     }
 }
 
@@ -95,14 +107,14 @@ private extension BookViewController {
     func setViewHierarchy() {
         self.view.addSubviews(
             bookTitlelabel,
-            seriesButton,
-            bookScrollView
+            bookSeriesHrizScrollView,
+            bookVrtcScrollView
         )
         
-        bookScrollView.addSubviews(
-            bookScrollContentView
-        )
+        bookSeriesHrizScrollView.addSubview(bookSeriesScrollContentView)
+        bookSeriesScrollContentView.addSubview(bookSeriesHrizStackView)
         
+        bookVrtcScrollView.addSubview(bookScrollContentView)
         bookScrollContentView.addSubviews(
             bookInfoHrizStackView,
             bookDedVrtcStackView,
@@ -117,22 +129,30 @@ private extension BookViewController {
             $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).inset(10)
         }
         
-        seriesButton.snp.makeConstraints {
-            $0.leading.greaterThanOrEqualToSuperview().inset(20)
-            $0.trailing.lessThanOrEqualToSuperview().inset(20)
+        bookSeriesHrizScrollView.snp.makeConstraints {
             $0.top.equalTo(bookTitlelabel.snp.bottom).offset(16)
-            $0.width.height.equalTo(44)
-            $0.centerX.equalToSuperview()
+            $0.leading.trailing.equalTo(self.view.safeAreaLayoutGuide)
+            $0.height.equalTo(44)
         }
         
-        bookScrollView.snp.makeConstraints {
-            $0.top.equalTo(seriesButton.snp.bottom).offset(10)
+        bookSeriesScrollContentView.snp.makeConstraints {
+            $0.edges.equalTo(bookSeriesHrizScrollView.contentLayoutGuide)
+            $0.height.equalTo(bookSeriesHrizScrollView.frameLayoutGuide)
+        }
+        
+        bookSeriesHrizStackView.snp.makeConstraints {
+            $0.leading.greaterThanOrEqualToSuperview().inset(20)
+            $0.trailing.lessThanOrEqualToSuperview().inset(20)
+        }
+        
+        bookVrtcScrollView.snp.makeConstraints {
+            $0.top.equalTo(bookSeriesHrizScrollView.snp.bottom).offset(10)
             $0.leading.trailing.bottom.equalTo(self.view.safeAreaLayoutGuide)
         }
         
         bookScrollContentView.snp.makeConstraints {
-            $0.edges.equalTo(bookScrollView.contentLayoutGuide)
-            $0.width.equalTo(bookScrollView.frameLayoutGuide)
+            $0.edges.equalTo(bookVrtcScrollView.contentLayoutGuide)
+            $0.width.equalTo(bookVrtcScrollView.frameLayoutGuide)
         }
         
         bookInfoHrizStackView.snp.makeConstraints {
@@ -159,11 +179,20 @@ private extension BookViewController {
     }
     
     func bind() {
+        // Level 6
+        viewModel.bookCount
+            .receive(on: RunLoop.main)
+            .sink { [weak self] count in
+                guard let self else { return }
+                updateSeriesUI(count: count)
+//                updateSeriesUI(count: 1)
+            }.store(in: &subscriptions)
+        
         viewModel.selectedBook
             .receive(on: RunLoop.main)
             .sink { [weak self] book in
                 guard let self else { return }
-                updateUI(with: book)
+                updateDataUI(with: book)
             }.store(in: &subscriptions)
         
         viewModel.loadBookError
@@ -174,11 +203,15 @@ private extension BookViewController {
             }.store(in: &subscriptions)
     }
     
-    func updateUI(with book: Book?) {
+    func updateSeriesUI(count: Int) {
+        bookSeriesHrizStackView.configure(bookCount: count)
+    }
+    
+    func updateDataUI(with book: Book?) {
         if let book = book?.attributes {
             // Level 1
             bookTitlelabel.text = book.title
-            seriesButton.configuration?.title = String(1)
+//            seriesButton.configuration?.title = String(1)
             
             // Level 2
             let convertedDate = book.releaseDate.toDate()?.toString()
@@ -198,14 +231,16 @@ private extension BookViewController {
             bookChapterVrtcStackView.configure(chapters: book.chapters)
             
         } else {
-            // 예외 처리 1
-            // - 데이터 없을 때 기본값 표시
+            /*
+             예외 처리 1
+             - 데이터 없을 때 기본값 표시
+             */
             let defaultValue = "N/A"
             let defaultChapter = Chapter(title: defaultValue)
             
             // Level 1
             bookTitlelabel.text = defaultValue
-            seriesButton.titleLabel?.text = String(1)
+//            seriesButton.configuration?.title = String(1)
             
             // Level 2
             bookInfoHrizStackView.configure(
@@ -229,6 +264,7 @@ private extension BookViewController {
 // MARK: - Private Methods
 
 private extension BookViewController {
+    /// Book 데이터 로드 중 오류 발생시 Alert 표시
     func showErrorAlert(message: String) {
         let sheet = UIAlertController(title: "오류", message: message, preferredStyle: .alert)
         sheet.addAction(UIAlertAction(title: "확인", style: .default))

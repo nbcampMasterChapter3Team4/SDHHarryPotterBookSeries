@@ -13,8 +13,9 @@ final class BookViewModel {
     // MARK: - Properties
     
     private let dataService = DataService()
-    private var books: [Book]?
+    
     var selectedBookIndex: Int
+    private var books: [Book]?
     private var subscriptions = Set<AnyCancellable>()
     
     // MARK: - Initializer
@@ -25,10 +26,14 @@ final class BookViewModel {
     
     // MARK: - Data ➡️ Output
     
+    /// Book 데이터 개수
+    var bookCount = CurrentValueSubject<Int, Never>(0)
+    /// 현재 표시하고 있는 Book
     var selectedBook = CurrentValueSubject<Book?, Never>(nil)
+    /// Book 데이터 로드 중 에러 메세지
     var loadBookError = PassthroughSubject<String, Never>()
     
-    /// 책 사진
+    /// Book 사진
     var image: UIImage? {
         return BookImageName.allCases[selectedBookIndex].image
     }
@@ -42,7 +47,8 @@ extension BookViewModel {
             switch result {
             case .success(let books):
                 self.books = books
-                selectedBook.send(books[selectedBookIndex])
+                bookCount.send(self.books?.count ?? 0)
+                selectedBook.send(self.books?[selectedBookIndex])
                 
             case .failure(let error):
                 self.books = nil

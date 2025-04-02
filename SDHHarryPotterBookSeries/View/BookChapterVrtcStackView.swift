@@ -50,11 +50,7 @@ final class BookChapterVrtcStackView: UIStackView {
         
         // arrangedSubView로 챕터 추가
         chapters.forEach { chapter in
-            let chapterLabel = UILabel()
-            chapterLabel.font = .systemFont(ofSize: 14)
-            chapterLabel.textColor = .darkGray
-            chapterLabel.numberOfLines = 0
-            chapterLabel.text = chapter.title
+            let chapterLabel = makeChapterLabel(text: chapter.title)
             self.addArrangedSubview(chapterLabel)
         }
     }
@@ -69,5 +65,15 @@ private extension BookChapterVrtcStackView {
     
     func setViewHierarchy() {
         self.addArrangedSubview(infoChapterLabel)
+    }
+    
+    func makeChapterLabel(text: String) -> UILabel {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 14)
+        label.textColor = .darkGray
+        label.numberOfLines = 0
+        label.text = text
+        
+        return label
     }
 }
