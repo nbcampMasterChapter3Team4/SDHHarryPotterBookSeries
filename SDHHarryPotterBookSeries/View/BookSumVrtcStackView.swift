@@ -18,6 +18,7 @@ final class BookSumVrtcStackView: UIStackView {
     
     // MARK: - Properties
     
+    // TODO: UserDefaults에 더 보기/접기 상태 저장
     private var totalSummary = ""
     private var showingSummary = "" {
         didSet {
@@ -140,7 +141,8 @@ private extension BookSumVrtcStackView {
     }
     
     func setButtonAction() {
-        let action = UIAction { [self] _ in
+        let action = UIAction { [weak self] _ in
+            guard let self = self else { return }
             
             if seeMoreButtonTitle == .folded {
                 showingSummary = totalSummary
