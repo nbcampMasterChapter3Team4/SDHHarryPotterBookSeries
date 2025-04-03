@@ -130,9 +130,9 @@ final class BookSummaryStackView: UIStackView {
     
     func configure(summary: String) {
         totalSummary = summary
+        loadSummaryState()
         
         if totalSummary.count >= 450 {
-            loadSummaryState()
             if summaryState == .none {  // 초기 상태
                 summaryState = .folded
             }
@@ -148,7 +148,7 @@ private extension BookSummaryStackView {
     func setupUI() {
         setViewHierarchy()
         setConstraints()
-        setButtonAction()
+        setButtonTarget()
     }
     
     func setViewHierarchy() {
@@ -171,7 +171,7 @@ private extension BookSummaryStackView {
         }
     }
     
-    func setButtonAction() {
+    func setButtonTarget() {
         seeMoreButton.addTarget(self, action: #selector(seeMoreButtonTarget), for: .touchUpInside)
     }
     

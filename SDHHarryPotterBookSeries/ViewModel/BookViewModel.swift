@@ -29,7 +29,7 @@ final class BookViewModel {
     /// 현재 표시하고 있는 Book
     var selectedBook = CurrentValueSubject<Book?, Never>(nil)
     /// Book 데이터 로드 중 발생한 에러 메세지
-    var loadBookError = PassthroughSubject<String, Never>()
+    var loadBookError = CurrentValueSubject<String, Never>("")
     
     /// Book 사진
     var image: UIImage? {
@@ -45,10 +45,12 @@ extension BookViewModel {
             switch result {
             case .success(let books):
                 self.books = books
-                bookCount.send(self.books?.count ?? 1)
+                selectedBook.send(self.books?[selectedBookIndex])
+                bookCount.send(self.books?.count ?? 0)
                 
             case .failure(let error):
                 self.books = nil
+                selectedBook.send(nil)
                 bookCount.send(0)
                 
                 let message: String

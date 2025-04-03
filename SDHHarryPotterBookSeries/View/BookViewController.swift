@@ -99,11 +99,9 @@ class BookViewController: UIViewController {
         seriesStackView.sendIndexDelegate = self
         
         setupUI()
-        bind()
-        // 뷰 모델의 데이터를 바인딩한 후 Book 데이터를 로드해야 오류 발생시 Alert가 정상적으로 표시됨
         viewModel.loadBooks()
-        // 마지막으로 본 Book의 Index 불러옴
         loadSelectedBookIndex()
+        bind()
     }
 }
 
@@ -215,7 +213,9 @@ private extension BookViewController {
             .receive(on: RunLoop.main)
             .sink { [weak self] errorMsg in
                 guard let self else { return }
-                showErrorAlert(message: errorMsg)
+                if !errorMsg.isEmpty {
+                    showErrorAlert(message: errorMsg)
+                }
             }.store(in: &subscriptions)
     }
     
@@ -275,6 +275,14 @@ private extension BookViewController {
     }
 }
 
+// MARK: - SendIndexDelegate
+
+extension BookViewController: SendIndexDelegate {
+    func sendIndex(index: Int) {
+        selectedBookIndex = index
+    }
+}
+
 // MARK: - Private Methods
 
 private extension BookViewController {
@@ -293,13 +301,5 @@ private extension BookViewController {
     /// UserDefaults ⬅️ selectedBookIndex 값 저장
     func saveSelectedBookIndex() {
         UserDefaults.standard.set(selectedBookIndex, forKey: selectedBookIndexKey)
-    }
-}
-
-// MARK: - SendIndexDelegate
-
-extension BookViewController: SendIndexDelegate {
-    func sendIndex(index: Int) {
-        selectedBookIndex = index
     }
 }
