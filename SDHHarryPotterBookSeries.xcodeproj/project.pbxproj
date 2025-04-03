@@ -29,6 +29,11 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		5B1B704D2D9F014600821F9A /* Resources */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		5B9DFF882D90F57B00DA108E /* SDHHarryPotterBookSeries */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -56,6 +61,7 @@
 			children = (
 				5B1B703C2D9EE18F00821F9A /* README.md */,
 				5B9D00582D930CAD00DA108E /* .gitignore */,
+				5B1B704D2D9F014600821F9A /* Resources */,
 				5B9DFF882D90F57B00DA108E /* SDHHarryPotterBookSeries */,
 				5B9DFF872D90F57B00DA108E /* Products */,
 			);
@@ -85,6 +91,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				5B1B704D2D9F014600821F9A /* Resources */,
 				5B9DFF882D90F57B00DA108E /* SDHHarryPotterBookSeries */,
 			);
 			name = SDHHarryPotterBookSeries;
