@@ -19,7 +19,7 @@ class BookViewController: UIViewController {
     // MARK: - Properties
     
     /*
-     UX 고민 2
+     UX 고민
      - 마지막으로 본 Book의 Index 저장
      */
     private let selectedBookIndexKey = "selectedBookIndex"
@@ -46,23 +46,6 @@ class BookViewController: UIViewController {
         
         return label
     }()
-    
-    /*
-     UX 고민 1
-     - Book 데이터 개수가 늘어났을 때 스크롤하여 볼 수 있도록 스크롤 뷰 생성
-     - 아이폰 SE에서 7번째 버튼이 찌그러지는 것도 방지하기 위함
-     */
-    /// Book 시리즈 스크롤 뷰
-    private let seriesScrollView: UIScrollView = {
-        let scrollView = UIScrollView()
-        scrollView.showsHorizontalScrollIndicator = false
-        scrollView.showsVerticalScrollIndicator = false
-        
-        return scrollView
-    }()
-    
-    /// Book 시리즈 스크롤 뷰의 컨텐츠 뷰
-    private let seriesScrollContentView = UIView()
     
     /// Book 시리즈 영역
     private let seriesStackView = SeriesStackView()
@@ -116,12 +99,9 @@ private extension BookViewController {
     func setViewHierarchy() {
         self.view.addSubviews(
             bookTitlelabel,
-            seriesScrollView,
+            seriesStackView,
             bookScrollView
         )
-        
-        seriesScrollView.addSubview(seriesScrollContentView)
-        seriesScrollContentView.addSubview(seriesStackView)
         
         bookScrollView.addSubview(bookScrollContentView)
         bookScrollContentView.addSubviews(
@@ -141,26 +121,13 @@ private extension BookViewController {
             $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).inset(10)
         }
         
-        // 시리즈 버튼 영역
-        seriesScrollView.snp.makeConstraints {
-            // top = 책 제목으로부터 16 떨어지도록 세팅
-            $0.top.equalTo(bookTitlelabel.snp.bottom).offset(16)
-            $0.leading.trailing.equalTo(self.view.safeAreaLayoutGuide)
-        }
-        
-        seriesScrollContentView.snp.makeConstraints {
-            $0.edges.equalTo(seriesScrollView.contentLayoutGuide)
-            $0.height.equalTo(seriesScrollView.frameLayoutGuide)
-        }
-        
         seriesStackView.snp.makeConstraints {
             // leading, trailing = superView로부터 20 이상 떨어지도록 세팅
-//            $0.leading.greaterThanOrEqualToSuperview().inset(20)
-//            $0.trailing.lessThanOrEqualToSuperview().inset(20)
-            $0.leading.equalToSuperview().inset(20)
-            $0.trailing.equalToSuperview().inset(20)
-            $0.top.bottom.equalToSuperview()
-            $0.height.equalTo(40)
+            $0.leading.greaterThanOrEqualToSuperview().inset(20)
+            $0.trailing.lessThanOrEqualToSuperview().inset(20)
+            // top = 책 제목으로부터 16 떨어지도록 세팅
+            $0.top.equalTo(bookTitlelabel.snp.bottom).offset(16)
+            $0.centerX.equalToSuperview()
         }
         
         // Book 데이터 스크롤 영역

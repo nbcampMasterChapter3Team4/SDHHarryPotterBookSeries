@@ -43,7 +43,7 @@ final class SeriesStackView: UIStackView {
         
         let subviews = self.arrangedSubviews
         subviews.forEach { subview in
-            subview.snp.makeConstraints { $0.width.height.equalTo(40) }
+            subview.snp.makeConstraints { $0.width.height.equalTo(36) }
             subview.layer.cornerRadius = subview.frame.height / 2
         }
     }
