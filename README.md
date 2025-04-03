@@ -45,23 +45,21 @@ Autolayout과 View 간의 제약 관계를 익히고, 가변적인 데이터에 
 ## 실행 이미지
 
 <p align="center">
-  <img src="https://github.com/nbcampMasterChapter3Team4/SDHHarryPotterBookSeries/blob/main/Resources/iPhone_16_Pro_1.png" alt="iPhone_16_Pro_1" width="600">
-  <br/>
-  iPhone_16_Pro 실행 이미지 1
-  <br/>
-  <br/>
+   <img src="https://github.com/nbcampMasterChapter3Team4/SDHHarryPotterBookSeries/blob/main/Resources/iPhone_16_Pro_1.png" alt="iPhone_16_Pro_1" width="300">
+   <img src="https://github.com/nbcampMasterChapter3Team4/SDHHarryPotterBookSeries/blob/main/Resources/iPhone_16_Pro_2.png" alt="iPhone_16_Pro_2" width="300">
+   <br/>
+   iPhone_16_Pro 실행 이미지
+   <br/>
+   <br/>
 
-  <img src="https://github.com/nbcampMasterChapter3Team4/SDHHarryPotterBookSeries/blob/main/Resources/iPhone_16_Pro_2.png" alt="iPhone_16_Pro_2" width="600">
-  <br/>
-  iPhone_16_Pro 실행 이미지 2
-  <br/>
-  <br/>
-
-  <img src="https://github.com/nbcampMasterChapter3Team4/SDHHarryPotterBookSeries/blob/main/Resources/iPhone_16_Pro_2Hriz.png" alt="iPhone_16_Pro_2Hriz" width="600">
-  <br/>
-  iPhone_16_Pro 가로 모드 실행 이미지
-
-  <img src="https://github.com/nbcampMasterChapter3Team4/SDHHarryPotterBookSeries/blob/main/Resources/iPhone_SE_2.png" alt="iPhone_SE_2" width="600">
-  <br/>
-  iPhone_SE 실행 이미지
+   <img src="https://github.com/nbcampMasterChapter3Team4/SDHHarryPotterBookSeries/blob/main/Resources/iPhone_16_Pro_2Hriz1.png" alt="iPhone_16_Pro_2Hriz1" width="600">
+   <img src="https://github.com/nbcampMasterChapter3Team4/SDHHarryPotterBookSeries/blob/main/Resources/iPhone_16_Pro_2Hriz2.png" alt="iPhone_16_Pro_2Hriz2" width="600">
+   <br/>
+   iPhone_16_Pro 가로 모드 실행 이미지
+   <br/>
+   <br/>
+   
+   <img src="https://github.com/nbcampMasterChapter3Team4/SDHHarryPotterBookSeries/blob/main/Resources/iPhone_SE_2.png" alt="iPhone_SE_2" width="300">
+   <br/>
+   iPhone_SE 실행 이미지
 </p>
