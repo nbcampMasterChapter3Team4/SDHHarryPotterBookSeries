@@ -14,11 +14,7 @@ final class BookViewModel {
     
     private let dataService = DataService()
     
-    var selectedBookIndex = 0 {
-        didSet {
-            selectedBook.send(books?[selectedBookIndex])
-        }
-    }
+    private var selectedBookIndex = 0
     private var books: [Book]?
     private var subscriptions = Set<AnyCancellable>()
     
@@ -67,5 +63,11 @@ extension BookViewModel {
                 loadBookError.send(message)
             }
         }
+    }
+    
+    /// selectedBook(보이고 있는 Book) 변경 함수
+    func changeSelectedBook(to selectedBookIndex: Int) {
+        self.selectedBookIndex = selectedBookIndex
+        selectedBook.send(books?[selectedBookIndex])
     }
 }

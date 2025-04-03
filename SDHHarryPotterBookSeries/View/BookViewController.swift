@@ -25,7 +25,6 @@ class BookViewController: UIViewController {
     private let selectedBookIndexKey = "selectedBookIndex"
     private var selectedBookIndex = 0 {
         didSet {
-            viewModel.selectedBookIndex = selectedBookIndex
             seriesStackView.selectedBookIndex = selectedBookIndex
             bookSummaryStackView.selectedBookIndex = selectedBookIndex
             saveSelectedBookIndex()
@@ -280,6 +279,7 @@ private extension BookViewController {
 extension BookViewController: SendIndexDelegate {
     func sendIndex(index: Int) {
         selectedBookIndex = index
+        viewModel.changeSelectedBook(to: selectedBookIndex)
     }
 }
 
@@ -296,6 +296,7 @@ private extension BookViewController {
     /// UserDefaults ➡️ selectedBookIndex 값 로드
     func loadSelectedBookIndex() {
         selectedBookIndex = UserDefaults.standard.integer(forKey: selectedBookIndexKey)
+        viewModel.changeSelectedBook(to: selectedBookIndex)
     }
     
     /// UserDefaults ⬅️ selectedBookIndex 값 저장
