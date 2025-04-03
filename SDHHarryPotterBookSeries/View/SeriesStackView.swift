@@ -31,6 +31,7 @@ final class SeriesStackView: UIStackView {
         super.init(frame: frame)
         self.axis = .horizontal
         self.spacing = 10
+        self.distribution = .equalSpacing
     }
     
     required init(coder: NSCoder) {
@@ -65,7 +66,7 @@ final class SeriesStackView: UIStackView {
         } else {
             /*
              예외 처리 2
-             - 데이터 로드 실패 시 dummy 시리즈 버튼 추가
+             - 데이터 로드 실패 시 dummy 버튼 추가
              */
             removeSeriesButtons()
             

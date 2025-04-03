@@ -51,7 +51,7 @@ final class BookSummaryStackView: UIStackView {
     
     // MARK: - UI Components
     
-    private let infoSumLabel: UILabel = {
+    private let sumTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "Summary"
         label.font = .systemFont(ofSize: 18, weight: .bold)
@@ -116,6 +116,7 @@ final class BookSummaryStackView: UIStackView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.axis = .vertical
+        // 타이틀(Summary)과 요약(내용) 사이 간격 8
         self.spacing = 8
         self.alignment = .leading
         
@@ -153,7 +154,7 @@ private extension BookSummaryStackView {
     
     func setViewHierarchy() {
         self.addArrangedSubviews(
-            infoSumLabel,
+            sumTitleLabel,
             sumLabel,
             seeMoreHrizStack
         )

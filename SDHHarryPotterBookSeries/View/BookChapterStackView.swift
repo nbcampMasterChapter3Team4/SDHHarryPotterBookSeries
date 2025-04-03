@@ -12,7 +12,7 @@ final class BookChapterStackView: UIStackView {
     
     // MARK: - UI Components
         
-    private let infoChapterLabel: UILabel = {
+    private let chapterTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "Chapters"
         label.font = .systemFont(ofSize: 18, weight: .bold)
@@ -27,6 +27,7 @@ final class BookChapterStackView: UIStackView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.axis = .vertical
+        // 타이틀(Chapters)과 첫번째 챕터 사이 간격 8
         self.spacing = 8
         self.alignment = .leading
         
@@ -71,7 +72,7 @@ private extension BookChapterStackView {
     }
     
     func setViewHierarchy() {
-        self.addArrangedSubview(infoChapterLabel)
+        self.addArrangedSubview(chapterTitleLabel)
     }
     
     func makeChapterLabel(text: String) -> UILabel {

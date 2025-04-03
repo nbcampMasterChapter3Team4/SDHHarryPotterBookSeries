@@ -12,7 +12,7 @@ final class BookDedicationStackView: UIStackView {
     
     // MARK: - UI Components
     
-    private let infoDedLabel: UILabel = {
+    private let dedTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "Dedication"
         label.font = .systemFont(ofSize: 18, weight: .bold)
@@ -35,6 +35,7 @@ final class BookDedicationStackView: UIStackView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.axis = .vertical
+        // 타이틀(Dedication)과 헌정사(내용) 사이 간격 8
         self.spacing = 8
         self.alignment = .leading
         
@@ -61,7 +62,7 @@ private extension BookDedicationStackView {
     
     func setViewHierarchy() {
         self.addArrangedSubviews(
-            infoDedLabel,
+            dedTitleLabel,
             dedLabel
         )
     }

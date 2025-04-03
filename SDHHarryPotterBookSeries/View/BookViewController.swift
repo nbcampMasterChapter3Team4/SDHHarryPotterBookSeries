@@ -50,6 +50,7 @@ class BookViewController: UIViewController {
     /*
      UX 고민 1
      - Book 데이터 개수가 늘어났을 때 스크롤하여 볼 수 있도록 스크롤 뷰 생성
+     - 아이폰 SE에서 7번째 버튼이 찌그러지는 것도 방지하기 위함
      */
     /// Book 시리즈 스크롤 뷰
     private let seriesScrollView: UIScrollView = {
@@ -134,16 +135,17 @@ private extension BookViewController {
     func setConstraints() {
         // Book 제목 영역
         bookTitlelabel.snp.makeConstraints {
+            // leading, trailing = superView로부터 20 떨어지도록 세팅
             $0.leading.trailing.equalToSuperview().inset(20)
+            // top = safeArea 로 부터 10씩 떨어지도록 세팅
             $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).inset(10)
         }
         
-        // TODO: - 시리즈 가운데 정렬
         // 시리즈 버튼 영역
         seriesScrollView.snp.makeConstraints {
+            // top = 책 제목으로부터 16 떨어지도록 세팅
             $0.top.equalTo(bookTitlelabel.snp.bottom).offset(16)
             $0.leading.trailing.equalTo(self.view.safeAreaLayoutGuide)
-            $0.height.equalTo(40)
         }
         
         seriesScrollContentView.snp.makeConstraints {
@@ -152,14 +154,18 @@ private extension BookViewController {
         }
         
         seriesStackView.snp.makeConstraints {
-            $0.leading.greaterThanOrEqualToSuperview().inset(20)
-            $0.trailing.lessThanOrEqualToSuperview().inset(20)
-            $0.centerX.equalToSuperview()
+            // leading, trailing = superView로부터 20 이상 떨어지도록 세팅
+//            $0.leading.greaterThanOrEqualToSuperview().inset(20)
+//            $0.trailing.lessThanOrEqualToSuperview().inset(20)
+            $0.leading.equalToSuperview().inset(20)
+            $0.trailing.equalToSuperview().inset(20)
+            $0.top.bottom.equalToSuperview()
+            $0.height.equalTo(40)
         }
         
         // Book 데이터 스크롤 영역
         bookScrollView.snp.makeConstraints {
-            $0.top.equalTo(seriesScrollView.snp.bottom).offset(10)
+            $0.top.equalTo(seriesStackView.snp.bottom).offset(10)
             $0.leading.trailing.bottom.equalTo(self.view.safeAreaLayoutGuide)
         }
         
@@ -170,23 +176,30 @@ private extension BookViewController {
         
         // Book 정보 영역
         bookInfoStackView.snp.makeConstraints {
-            $0.leading.trailing.equalTo(self.view.safeAreaLayoutGuide).inset(5)
+            // leading, trailing = safeArea에서 5만큼씩 떨어지도록 세팅
+            $0.leading.trailing.equalToSuperview().inset(5)
             $0.top.equalToSuperview().inset(32)
             $0.height.equalTo(150)
         }
         
         bookDedicationStackView.snp.makeConstraints {
+            // top = 책 정보 영역과 24 떨어져 있도록 세팅
             $0.top.equalTo(bookInfoStackView.snp.bottom).offset(24)
+            // leading, trailing = superView와 20씩 떨어지도록 세팅
             $0.leading.trailing.equalToSuperview().inset(20)
         }
         
         bookSummaryStackView.snp.makeConstraints {
+            // top = Dedication 영역과 24만큼 떨어져 있도록 세팅
             $0.top.equalTo(bookDedicationStackView.snp.bottom).offset(24)
+            // leading, trailing = superView와 20씩 떨어지도록 세팅
             $0.leading.trailing.equalToSuperview().inset(20)
         }
         
         bookChapterStackView.snp.makeConstraints {
+            // 목차 영역의 top = Summary 영역과 24만큼 떨어져 있도록 세팅
             $0.top.equalTo(bookSummaryStackView.snp.bottom).offset(24)
+            // leading, trailing = superView와 20씩 떨어지도록 세팅
             $0.leading.trailing.equalToSuperview().inset(20)
             $0.bottom.equalToSuperview()
         }
